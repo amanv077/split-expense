@@ -37,7 +37,7 @@ function Header({ allExpense, totalAmount }) {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="xl">
+      <Container maxWidth="l">
         <Toolbar disableGutters>
           <PointOfSaleIcon
             sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
