@@ -9,7 +9,8 @@ import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 
-const NewExpense = ({ addNewExpense, memberNames }) => {
+const NewExpense = ({ trip, allExpense, addNewExpense }) => {
+  const { members: memberNames } = trip || {};
   const [amount, setAmount] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
@@ -90,23 +91,27 @@ const NewExpense = ({ addNewExpense, memberNames }) => {
           <h1>Members Included in Expense</h1>
           <FormControl component="fieldset">
             <FormGroup>
-              {memberNames.map((name) => (
-                <FormControlLabel
-                  key={name}
-                  control={
-                    <Switch
-                      checked={!!checked[name]}
-                      onChange={() =>
-                        setChecked((prevChecked) => ({
-                          ...prevChecked,
-                          [name]: !prevChecked[name],
-                        }))
-                      }
-                    />
-                  }
-                  label={name}
-                />
-              ))}
+              {memberNames && memberNames.length > 0 ? (
+                memberNames.map((name) => (
+                  <FormControlLabel
+                    key={name}
+                    control={
+                      <Switch
+                        checked={!!checked[name]}
+                        onChange={() =>
+                          setChecked((prevChecked) => ({
+                            ...prevChecked,
+                            [name]: !prevChecked[name],
+                          }))
+                        }
+                      />
+                    }
+                    label={name}
+                  />
+                ))
+              ) : (
+                <div>No members found.</div> // This line displays a message when there are no members.
+              )}
             </FormGroup>
           </FormControl>
         </Box>

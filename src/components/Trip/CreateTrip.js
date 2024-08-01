@@ -4,40 +4,40 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useState } from "react";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import { v4 as uuidv4 } from "uuid";
 
-const CreateTrip = ({ addNewMember, setTrips, trips }) => {
+const CreateTrip = ({ setTrips }) => {
   const [tripName, setTripName] = useState("");
-  const [member1, setMember1] = useState("");
-  const [member2, setMember2] = useState("");
-  const [member3, setMember3] = useState("");
-  const [member4, setMember4] = useState("");
+  const [newMember, setNewMember] = useState("");
+  const [members, setMembers] = useState([]);
 
   const createNewTrip = (e) => {
     e.preventDefault();
-
-    const newTrip = {
-      tripName,
-      member1,
-      member2,
-      member3,
-      member4,
-    };
-
-    if (!tripName || !member1 || !member2 || !member3 || !member4) {
-      console.warn("All fields must be filled out to create a new trip.");
-      return;
+    const newTrip = { tripName, members, tripId: uuidv4() };
+    if (!tripName || members.length < 2) {
+      console.warn("Trip atleast needs 2 members.");
+      return null;
     }
-
-    const updatedTrips = [...trips, newTrip];
-    setTrips(updatedTrips);
-
-    addNewMember(newTrip);
+    setTrips((prevTrips) => [...prevTrips, newTrip]);
 
     setTripName("");
-    setMember1("");
-    setMember2("");
-    setMember3("");
-    setMember4("");
+    setMembers([]);
+  };
+
+  const addNewMember = () => {
+    const alreadyExist = members.find(
+      (member) => member.toLowerCase() === newMember.toLowerCase()
+    );
+    if (!alreadyExist) setMembers((prev) => [...prev, newMember]);
+    setNewMember("");
+  };
+
+  const handleDelete = (memberToDelete) => {
+    setMembers((prevMembers) =>
+      prevMembers.filter((member) => member !== memberToDelete)
+    );
   };
 
   return (
@@ -49,7 +49,7 @@ const CreateTrip = ({ addNewMember, setTrips, trips }) => {
           m: 3,
           width: "100vw",
           backgroundColor: "#b8b8d1",
-          padding: 4,
+          padding: 8,
         },
       }}
     >
@@ -68,37 +68,34 @@ const CreateTrip = ({ addNewMember, setTrips, trips }) => {
           </Box>
           <Box sx={{ padding: 2 }}>
             <TextField
-              required
               id="outlined-required"
-              label="Member01"
+              label="Member"
               sx={{ margin: 2 }}
-              value={member1}
-              onInput={(e) => setMember1(e.target.value)}
+              value={newMember}
+              onInput={(e) => setNewMember(e.target.value)}
             />
-            <TextField
-              required
-              id="outlined-required"
-              label="Member02"
-              sx={{ margin: 2 }}
-              value={member2}
-              onInput={(e) => setMember2(e.target.value)}
-            />
-            <TextField
-              required
-              id="outlined-required"
-              label="Member03"
-              sx={{ margin: 2 }}
-              value={member3}
-              onInput={(e) => setMember3(e.target.value)}
-            />
-            <TextField
-              required
-              id="outlined-required"
-              label="Member04"
-              sx={{ margin: 2 }}
-              value={member4}
-              onInput={(e) => setMember4(e.target.value)}
-            />
+            <Button
+              sx={{ margin: "45px" }}
+              variant="contained"
+              type="submit"
+              disabled={!newMember}
+              onClick={addNewMember}
+            >
+              Add Member
+            </Button>
+            <Box
+              sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+            >
+              {members.map((member) => (
+                <Stack
+                  sx={{ margin: "3px", padding: "5px" }}
+                  direction="row"
+                  spacing={1}
+                >
+                  <Chip label={member} onDelete={() => handleDelete(member)} />
+                </Stack>
+              ))}
+            </Box>
           </Box>
           <Button sx={{ margin: "45px" }} variant="contained" type="submit">
             Create Trip
