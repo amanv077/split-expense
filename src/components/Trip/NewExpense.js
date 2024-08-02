@@ -16,6 +16,7 @@ const NewExpense = ({ trip, allExpense, addNewExpense }) => {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [checked, setChecked] = useState(() => {
+    if (!memberNames) return {};
     const initialChecked = {};
     memberNames.forEach((name) => {
       initialChecked[name] = true; // Set to true
