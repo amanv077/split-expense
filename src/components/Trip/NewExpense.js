@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
@@ -8,26 +8,47 @@ import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
+import Table from "../Data/Table";
+import uuid4 from "uuid4";
+import Main from "../Homepage/Main/page";
 
-const NewExpense = ({ trip, allExpense, addNewExpense }) => {
-  const { members: memberNames } = trip || {};
+const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
+  const trip = useMemo(
+    () =>
+      Array.isArray(trips)
+        ? trips.find((trip) => trip.tripId === selectedTripId)
+        : null,
+    [trips, selectedTripId]
+  );
+  const memberNames = useMemo(() => (trip ? trip.members : []), [trip]);
+
   const [amount, setAmount] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
+  const [backToHome, setbackToHome] = useState(false);
 
   const [checked, setChecked] = useState(() => {
-    if (!memberNames) return {};
     const initialChecked = {};
     memberNames.forEach((name) => {
-      initialChecked[name] = true; // Set to true
+      initialChecked[name] = true;
     });
     return initialChecked;
   });
+
+  useEffect(() => {
+    const initialChecked = {};
+    memberNames.forEach((name) => {
+      initialChecked[name] = true;
+    });
+    setChecked(initialChecked);
+  }, [memberNames]);
 
   const saveExpense = () => {
     const selectedUsername = selectedUser || "Charity";
     const selectedMembers = memberNames.filter((name) => checked[name]);
     addNewExpense({
+      tripId: selectedTripId,
+      expenseId: uuid4(),
       amount,
       desc,
       selectedUser: selectedUsername,
@@ -37,8 +58,18 @@ const NewExpense = ({ trip, allExpense, addNewExpense }) => {
     setAmount("");
     setDesc("");
     setSelectedUser(null);
+    // setbackToHome(true);
   };
 
+  const totalCost = useMemo(() => {
+    return allExpense
+      .filter((expense) => expense.tripId === selectedTripId)
+      .reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
+  }, [allExpense, selectedTripId]);
+
+  if (backToHome) {
+    return <Main />;
+  }
   return (
     <Box
       sx={{
@@ -54,7 +85,8 @@ const NewExpense = ({ trip, allExpense, addNewExpense }) => {
     >
       <Paper elevation={3}>
         <Box sx={{ padding: 2 }}>
-          <h1>Add New Expense</h1>
+          <h1>Add New Expense for: {trip.tripName}</h1>
+          <h4>The Trip Cost to Group Till Now: &#8377; {totalCost}</h4>
         </Box>
         <Box sx={{ padding: 2 }}>
           <TextField
@@ -111,7 +143,7 @@ const NewExpense = ({ trip, allExpense, addNewExpense }) => {
                   />
                 ))
               ) : (
-                <div>No members found.</div> // This line displays a message when there are no members.
+                <div>No members found.</div>
               )}
             </FormGroup>
           </FormControl>
@@ -123,7 +155,16 @@ const NewExpense = ({ trip, allExpense, addNewExpense }) => {
         >
           Add New Expense
         </Button>
+        <Button
+          sx={{ margin: "45px" }}
+          variant="contained"
+          type="button"
+          onClick={() => setbackToHome(true)}
+        >
+          Back
+        </Button>
       </Paper>
+      <Table allExpense={allExpense} selectedTripId={selectedTripId} />
     </Box>
   );
 };

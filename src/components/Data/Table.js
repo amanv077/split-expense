@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -6,8 +6,22 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Box } from "@mui/material";
+import { useStoreProvider } from "../../store";
 
-const Table = ({ allExpense }) => {
+const Table = ({ selectedTripId }) => {
+  const { allExpense, setAllExpense } = useStoreProvider();
+
+  const filteredExpenses = useMemo(
+    () => allExpense.filter((expense) => expense.tripId === selectedTripId),
+    [allExpense, selectedTripId]
+  );
+
+  const handleDeleteTrip = (expenseId) => {
+    setAllExpense(
+      allExpense.filter((expense) => expense.expenseId !== expenseId)
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -22,7 +36,7 @@ const Table = ({ allExpense }) => {
         },
       }}
     >
-      {allExpense.map((data, index) => (
+      {filteredExpenses.map((data, index) => (
         <Card
           key={index}
           sx={{
@@ -35,19 +49,26 @@ const Table = ({ allExpense }) => {
             <Typography variant="h5" component="div">
               Paid By: {data.selectedUser}
             </Typography>
-            <Typography x={{ mb: 1.5 }} color="text.secondary">
+            <Typography sx={{ mb: 1.5 }} color="text.secondary">
               Spent On: {data.desc}
             </Typography>
             Members Included:
-            {data.selectedMembers.map((name) => (
-              <ul>
-                <li> {name}</li>
+            {data.selectedMembers.map((name, memberIndex) => (
+              <ul key={memberIndex}>
+                <li>{name}</li>
               </ul>
             ))}
             <Typography variant="body2">Amount Spent: {data.amount}</Typography>
           </CardContent>
           <CardActions>
-            <IconButton aria-label="delete" size="large">
+            <IconButton
+              aria-label="delete"
+              size="large"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteTrip(data.expenseId);
+              }}
+            >
               <DeleteIcon fontSize="inherit" />
             </IconButton>
           </CardActions>

@@ -16,7 +16,7 @@ import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
-function Header({ allExpense, totalAmount }) {
+function Navbar({ allExpense }) {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -46,7 +46,7 @@ function Header({ allExpense, totalAmount }) {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -103,7 +103,7 @@ function Header({ allExpense, totalAmount }) {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -127,10 +127,6 @@ function Header({ allExpense, totalAmount }) {
                 {page}
               </Button>
             ))}
-          </Box>
-
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-            <h1>Total Expense: {totalAmount} </h1>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -167,4 +163,4 @@ function Header({ allExpense, totalAmount }) {
     </AppBar>
   );
 }
-export default Header;
+export default Navbar;

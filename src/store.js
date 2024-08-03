@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { ThemeProvider } from "@mui/material/styles";
-import Theme from "./theme/Theme";
-import Navbar from "./components/Homepage/Navbar/page";
-import Main from "./components/Homepage/Main/page";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const App = () => {
+export const StoreContext = createContext(null);
+
+function StoreProvider({ children }) {
   const [trips, setTrips] = useState(() => {
     const storedTrips = JSON.parse(localStorage.getItem("trips")) || [];
     return storedTrips;
@@ -31,18 +29,21 @@ const App = () => {
     (acc, curr) => acc + (parseFloat(curr.amount) || 0),
     0
   );
-
   return (
-    <ThemeProvider theme={Theme}>
-      <Navbar />
-      <Main
-        trips={trips}
-        setTrips={setTrips}
-        addNewExpense={addNewExpense}
-        allExpense={allExpense}
-      />
-    </ThemeProvider>
+    <StoreContext.Provider
+      value={{
+        totalAmount,
+        addNewExpense,
+        setTrips,
+        trips,
+        allExpense,
+        setAllExpense,
+      }}
+    >
+      {children}
+    </StoreContext.Provider>
   );
-};
+}
 
-export default App;
+export const useStoreProvider = () => useContext(StoreContext);
+export default StoreProvider;
