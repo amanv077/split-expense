@@ -1,5 +1,4 @@
 import { createTheme } from "@mui/material/styles";
-import { orange } from "@mui/material/colors";
 import { darkScrollbar } from "@mui/material";
 
 const Theme = createTheme({
@@ -12,13 +11,13 @@ const Theme = createTheme({
   },
   palette: {
     background: {
-      default: "#0d050d",
+      default: "#F8F9FA",
     },
     primary: {
-      main: "#5b5f97",
+      main: "#0D6EFD",
     },
     secondary: {
-      main: orange[500],
+      main: "#6C757D",
     },
   },
 });

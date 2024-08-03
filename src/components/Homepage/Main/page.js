@@ -39,8 +39,6 @@ const Main = () => {
   return (
     <Box
       sx={{
-        // display: "flex",
-        // flexWrap: "wrap",
         "& > :not(style)": {
           // m: 3,
           // width: "100vw",
@@ -80,7 +78,7 @@ const Main = () => {
                     Trip Name: {trip.tripName}
                   </Typography>
 
-                  <h4> Members Included:</h4>
+                  <h4> Trip Members:</h4>
                   <ul>
                     {trip.members.map((member, index) => (
                       <li key={index}>{member}</li>
