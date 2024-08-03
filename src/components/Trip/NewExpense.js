@@ -11,6 +11,7 @@ import FormControl from "@mui/material/FormControl";
 import Table from "../Data/Table";
 import uuid4 from "uuid4";
 import Main from "../Homepage/Main/page";
+import Overview from "../OverviewDisplay/Overview";
 
 const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
   const trip = useMemo(
@@ -26,6 +27,7 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
   const [desc, setDesc] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [backToHome, setbackToHome] = useState(false);
+  const [summary, setSummary] = useState(false);
 
   const [checked, setChecked] = useState(() => {
     const initialChecked = {};
@@ -70,25 +72,35 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
   if (backToHome) {
     return <Main />;
   }
+  if (summary) {
+    return (
+      <Overview
+        allExpense={allExpense}
+        trip={trip}
+        selectedTripId={selectedTripId}
+      />
+    );
+  }
   return (
     <Box
       sx={{
         display: "flex",
+        justifyContent: "center",
         flexWrap: "wrap",
         "& > :not(style)": {
           m: 3,
-          width: "100vw",
+          width: "70vw",
           backgroundColor: "#b8b8d1",
-          padding: 4,
+          padding: 8,
         },
       }}
     >
-      <Paper elevation={3}>
+      <Paper elevation={10}>
         <Box sx={{ padding: 2 }}>
           <h1>Add New Expense for: {trip.tripName}</h1>
           <h4>The Trip Cost to Group Till Now: &#8377; {totalCost}</h4>
         </Box>
-        <Box sx={{ padding: 2 }}>
+        <Box sx={{}}>
           <TextField
             sx={{ margin: 2 }}
             id="outlined-number"
@@ -109,7 +121,7 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        <Box sx={{ padding: 2 }}>
+        <Box sx={{}}>
           <h1>Paid By</h1>
           <Autocomplete
             options={memberNames} // Use memberNames as options
@@ -162,6 +174,14 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
           onClick={() => setbackToHome(true)}
         >
           Back
+        </Button>
+        <Button
+          sx={{ margin: "45px" }}
+          variant="contained"
+          type="button"
+          onClick={() => setSummary(true)}
+        >
+          Final Kar Do
         </Button>
       </Paper>
       <Table allExpense={allExpense} selectedTripId={selectedTripId} />

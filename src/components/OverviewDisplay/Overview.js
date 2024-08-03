@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 
-const Overview = ({ allExpense, trip = { members: [] } }) => {
-  console.log("Trips", trip, "allExpense", allExpense);
+const Overview = ({ allExpense, trip, selectedTripId }) => {
+  // Filter expenses based on selectedTripId
+  const filteredExpenses = useMemo(
+    () => allExpense.filter((expense) => expense.tripId === selectedTripId),
+    [allExpense, selectedTripId]
+  );
 
-  const totalAmount = allExpense.reduce(
+  const totalAmount = filteredExpenses.reduce(
     (acc, curr) => acc + (parseFloat(curr.amount) || 0),
     0
   );
@@ -17,44 +21,45 @@ const Overview = ({ allExpense, trip = { members: [] } }) => {
     spend: 0,
   }));
 
-  allExpense.forEach((expense) => {
-    const spentOnEachMember = Math.round(
-      expense.amount / expense.selectedMembers.length,
-      2
+  filteredExpenses.forEach((expense) => {
+    const spentOnEachMember = parseFloat(
+      (expense.amount / expense.selectedMembers.length).toFixed(2)
     );
 
     const memberWhoPaid = memberPayInfo.find(
       (member) => member.name === expense.selectedUser
     );
 
-    memberWhoPaid.paid = memberWhoPaid.paid + Number(expense.amount);
+    if (memberWhoPaid) {
+      memberWhoPaid.paid += parseFloat(expense.amount);
+    }
 
     expense.selectedMembers.forEach((name) => {
       const selectedMember = memberPayInfo.find(
         (member) => member.name === name
       );
-      selectedMember.spend = selectedMember.spend + spentOnEachMember;
+      if (selectedMember) {
+        selectedMember.spend += spentOnEachMember;
+      }
     });
   });
-  console.log("member", { memberPayInfo });
 
   const [summary, setSummary] = useState([]);
 
-  function calculateNetBalances(memberPayInfo) {
+  const calculateNetBalances = (memberPayInfo) => {
     return memberPayInfo.map((member) => ({
       name: member.name,
       net: member.paid - member.spend,
     }));
-  }
+  };
 
-  function settleBalances(memberPayInfo) {
+  const settleBalances = (memberPayInfo) => {
     const netBalances = calculateNetBalances(memberPayInfo);
 
-    // Separate into payers and receivers
-    let payers = netBalances.filter((member) => member.net < 0);
+    let payers = netBalances
+      .filter((member) => member.net < 0)
+      .map((payer) => ({ ...payer, net: Math.abs(payer.net) }));
     let receivers = netBalances.filter((member) => member.net > 0);
-
-    payers = payers.map((payer) => ({ ...payer, net: Math.abs(payer.net) })); // Convert net to positive for payers
 
     const transactions = [];
 
@@ -80,7 +85,7 @@ const Overview = ({ allExpense, trip = { members: [] } }) => {
     });
 
     return transactions;
-  }
+  };
 
   const handleFinalize = () => {
     const transactions = settleBalances(memberPayInfo);
@@ -94,7 +99,7 @@ const Overview = ({ allExpense, trip = { members: [] } }) => {
         flexWrap: "wrap",
         "& > :not(style)": {
           m: 3,
-          width: "100vw",
+          width: "100%",
           backgroundColor: "#b8b8d1",
           padding: 4,
         },
