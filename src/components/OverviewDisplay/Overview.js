@@ -107,7 +107,7 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
         padding: 3,
         paddingTop: 8, // Ensures the content is not hidden behind the navbar
         "& > :not(style)": {
-          width: "80%",
+          width: "100vw",
           maxWidth: 800,
         },
       }}
