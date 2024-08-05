@@ -84,8 +84,7 @@ const CreateTrip = () => {
         flexWrap: "wrap",
         paddingTop: "64px", // Adjust this value according to your Navbar height
         "& > :not(style)": {
-          m: 2,
-          width: "100%",
+          width: "100vw",
           maxWidth: 600,
         },
       }}

@@ -101,7 +101,7 @@ const NewExpense = () => {
         flexWrap: "wrap",
         "& > :not(style)": {
           m: 3,
-          width: "70vw",
+          width: "100vw",
           backgroundColor: "#F8F9FA",
           padding: 4,
         },

@@ -29,7 +29,7 @@ const Table = ({ selectedTripId }) => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        width: "100%",
+        width: "100vw",
       }}
     >
       <Typography variant="h4" component="h2" sx={{ marginY: 2 }}>
@@ -38,7 +38,7 @@ const Table = ({ selectedTripId }) => {
       <Paper
         elevation={2}
         sx={{
-          width: "90%",
+          width: "100vw",
           backgroundColor: "#f0f0f0",
           padding: 2,
           display: "flex",
@@ -50,8 +50,8 @@ const Table = ({ selectedTripId }) => {
           <Card
             key={index}
             sx={{
-              width: "23%",
-              maxWidth: 200,
+              width: "auto",
+              maxWidth: "200",
               backgroundColor: "#e0e0e0",
               margin: 1,
               display: "flex",
