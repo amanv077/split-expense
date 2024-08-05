@@ -1,4 +1,3 @@
-/* eslint-disable no-const-assign */
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
@@ -9,15 +8,19 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import { v4 as uuidv4 } from "uuid";
 import Snackbar from "@mui/material/Snackbar";
-import Main from "../Homepage/Main/page";
+import { useNavigate } from "react-router-dom";
+import { useStoreProvider } from "../../store";
 
-const CreateTrip = ({ setTrips }) => {
+const CreateTrip = () => {
+  const { setTrips } = useStoreProvider();
+
   const [tripName, setTripName] = useState("");
   const [newMember, setNewMember] = useState("");
   const [members, setMembers] = useState([]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState("");
-  const [backToHome, setbackToHome] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleClick = () => {
     setOpen(true);
@@ -45,7 +48,8 @@ const CreateTrip = ({ setTrips }) => {
     setMembers([]);
     setError("");
     handleClick();
-    setbackToHome(true);
+
+    navigate("/");
   };
 
   const addNewMember = (e) => {
@@ -67,10 +71,6 @@ const CreateTrip = ({ setTrips }) => {
       prevMembers.filter((member) => member !== memberToDelete)
     );
   };
-
-  if (backToHome) {
-    return <Main />;
-  }
 
   return (
     <Box
@@ -142,7 +142,7 @@ const CreateTrip = ({ setTrips }) => {
             sx={{ margin: "45px" }}
             variant="contained"
             type="button"
-            onClick={() => setbackToHome(true)}
+            onClick={() => navigate("/")}
           >
             Back
           </Button>

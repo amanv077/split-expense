@@ -8,12 +8,19 @@ import Switch from "@mui/material/Switch";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import Table from "../Data/Table";
-import uuid4 from "uuid4";
-import Main from "../Homepage/Main/page";
+import Snackbar from "@mui/material/Snackbar";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useStoreProvider } from "../../store";
 import Overview from "../OverviewDisplay/Overview";
+import Table from "../Data/Table";
 
-const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
+const NewExpense = () => {
+  const { addNewExpense, allExpense, trips } = useStoreProvider();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const { selectedTripId } = location.state || {};
   const trip = useMemo(
     () =>
       Array.isArray(trips)
@@ -26,9 +33,7 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
   const [amount, setAmount] = useState("");
   const [desc, setDesc] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
-  const [backToHome, setbackToHome] = useState(false);
   const [summary, setSummary] = useState(false);
-
   const [checked, setChecked] = useState(() => {
     const initialChecked = {};
     memberNames.forEach((name) => {
@@ -36,6 +41,8 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
     });
     return initialChecked;
   });
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const initialChecked = {};
@@ -46,11 +53,16 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
   }, [memberNames]);
 
   const saveExpense = () => {
+    if (!amount || !desc || !selectedUser) {
+      setError("Amount, description, and paid by fields are required.");
+      return;
+    }
+
     const selectedUsername = selectedUser || "Charity";
     const selectedMembers = memberNames.filter((name) => checked[name]);
     addNewExpense({
       tripId: selectedTripId,
-      expenseId: uuid4(),
+      expenseId: uuidv4(),
       amount,
       desc,
       selectedUser: selectedUsername,
@@ -60,7 +72,8 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
     setAmount("");
     setDesc("");
     setSelectedUser(null);
-    // setbackToHome(true);
+    setError("");
+    setOpenSnackbar(true);
   };
 
   const totalCost = useMemo(() => {
@@ -69,9 +82,6 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
       .reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
   }, [allExpense, selectedTripId]);
 
-  if (backToHome) {
-    return <Main />;
-  }
   if (summary) {
     return (
       <Overview
@@ -81,6 +91,7 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
       />
     );
   }
+
   return (
     <Box
       sx={{
@@ -97,10 +108,10 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
     >
       <Paper elevation={10}>
         <Box sx={{ padding: 2 }}>
-          <h1>Add New Expense for: {trip.tripName}</h1>
-          <h4>The Trip Cost to Group Till Now: &#8377; {totalCost}</h4>
+          <h1>Add New Expense for: {trip?.tripName}</h1>
+          <h4>The Trip Cost to Group Till Now: ₹ {totalCost}</h4>
         </Box>
-        <Box sx={{}}>
+        <Box>
           <TextField
             sx={{ margin: 2 }}
             id="outlined-number"
@@ -121,10 +132,10 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        <Box sx={{}}>
+        <Box>
           <h1>Paid By</h1>
           <Autocomplete
-            options={memberNames} // Use memberNames as options
+            options={memberNames}
             value={selectedUser}
             onChange={(event, newValue) => setSelectedUser(newValue)}
             renderInput={(params) => (
@@ -160,6 +171,11 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
             </FormGroup>
           </FormControl>
         </Box>
+        {error && (
+          <Box sx={{ color: "red", padding: 2 }}>
+            <p>{error}</p>
+          </Box>
+        )}
         <Button
           sx={{ margin: "45px" }}
           variant="contained"
@@ -171,7 +187,7 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
           sx={{ margin: "45px" }}
           variant="contained"
           type="button"
-          onClick={() => setbackToHome(true)}
+          onClick={() => navigate("/")}
         >
           Back
         </Button>
@@ -181,8 +197,14 @@ const NewExpense = ({ allExpense, addNewExpense, trips, selectedTripId }) => {
           type="button"
           onClick={() => setSummary(true)}
         >
-          Final Kar Do
+          Summary
         </Button>
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={5000}
+          onClose={() => setOpenSnackbar(false)}
+          message="Expense Created Successfully."
+        />
       </Paper>
       <Table allExpense={allExpense} selectedTripId={selectedTripId} />
     </Box>

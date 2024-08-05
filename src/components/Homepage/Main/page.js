@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
-import NewExpense from "../../Trip/NewExpense";
 import {
   Button,
   Card,
@@ -11,37 +10,37 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CreateTrip from "../../Trip/CreateTrip";
 import { useStoreProvider } from "../../../store";
+import { useNavigate } from "react-router-dom";
 
 const Main = () => {
   const { trips, setTrips, addNewExpense, allExpense } = useStoreProvider();
   const [openNewTrip, setOpenNewTrip] = useState(false);
-  const [openOldTrip, setOpenOldrip] = useState(false);
-
+  const [openOldTrip, setOpenOldTrip] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState("");
 
+  const navigate = useNavigate();
+
   const handleCreateNewTrip = () => {
+    navigate("create-trip");
     setOpenNewTrip(true);
-    setOpenOldrip(false);
+    setOpenOldTrip(false);
     setSelectedTripId("");
   };
+
   const handleDeleteTrip = (tripId) => {
     setTrips(trips.filter((trip) => trip.tripId !== tripId));
   };
 
   const handleCardClick = (tripId) => {
     setSelectedTripId(tripId);
-    setOpenNewTrip(false);
-    setOpenOldrip(true);
+    navigate("new-expense", { state: { selectedTripId: tripId } });
   };
 
   return (
     <Box
       sx={{
         "& > :not(style)": {
-          // m: 3,
-          // width: "100vw",
           backgroundColor: "#b8b8d1",
           padding: 5,
         },
@@ -77,7 +76,6 @@ const Main = () => {
                   <Typography variant="h5" component="div">
                     Trip Name: {trip.tripName}
                   </Typography>
-
                   <h4> Trip Members:</h4>
                   <ul>
                     {trip.members.map((member, index) => (
@@ -94,13 +92,12 @@ const Main = () => {
                       handleDeleteTrip(trip.tripId);
                     }}
                   >
-                    {" "}
                     <DeleteIcon fontSize="inherit" />
                   </IconButton>
                 </CardActions>
               </Card>
             ))}
-          </Box>{" "}
+          </Box>
           <Button
             sx={{ margin: "45px" }}
             variant="contained"
@@ -111,15 +108,6 @@ const Main = () => {
           </Button>
         </Paper>
       )}
-      {openOldTrip && (
-        <NewExpense
-          addNewExpense={addNewExpense}
-          trips={trips}
-          allExpense={allExpense}
-          selectedTripId={selectedTripId}
-        />
-      )}
-      {openNewTrip && <CreateTrip setTrips={setTrips} />}
     </Box>
   );
 };

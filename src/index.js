@@ -14,12 +14,14 @@ import CreateTrip from "./components/Trip/CreateTrip";
 import StoreProvider from "./store";
 import { ThemeProvider } from "@mui/material/styles";
 import Theme from "./theme/Theme";
+import NewExpense from "./components/Trip/NewExpense";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="/" element={<Main />} />
       <Route path="create-trip" element={<CreateTrip />} />
+      <Route path="new-expense" element={<NewExpense />} />
     </Route>
   )
 );

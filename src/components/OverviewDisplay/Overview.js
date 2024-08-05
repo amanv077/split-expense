@@ -2,9 +2,11 @@ import React, { useState, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 const Overview = ({ allExpense, trip, selectedTripId }) => {
-  // Filter expenses based on selectedTripId
+  const navigate = useNavigate();
+
   const filteredExpenses = useMemo(
     () => allExpense.filter((expense) => expense.tripId === selectedTripId),
     [allExpense, selectedTripId]
@@ -130,6 +132,14 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
         <Box sx={{ padding: 2, margin: 2 }}>
           <Button variant="contained" color="primary" onClick={handleFinalize}>
             Finalize
+          </Button>
+          <Button
+            sx={{ margin: "45px" }}
+            variant="contained"
+            type="button"
+            onClick={() => navigate("/")}
+          >
+            Back
           </Button>
           {summary.length > 0 && (
             <Box sx={{ padding: 2, margin: 2 }}>
