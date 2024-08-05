@@ -43,11 +43,11 @@ const Theme = createTheme({
       paper: "#FFFFFF",
     },
     primary: {
-      main: "#00DDFF", // Deep Teal
+      main: "#004D40", // Deep Teal
       contrastText: "#FFFFFF",
     },
     secondary: {
-      main: "#fff685", // Gold
+      main: "#FFD54F", // Gold
       contrastText: "#000000",
     },
     error: {
