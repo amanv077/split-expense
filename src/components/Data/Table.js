@@ -27,20 +27,19 @@ const Table = ({ selectedTripId }) => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
-        width: "90vw",
-        flexWrap: "wrap",
-        "& > :not(style)": {
-          m: 1,
-        },
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
       }}
     >
-      <h2>Transactions</h2>
+      <Typography variant="h4" component="h2" sx={{ marginY: 2 }}>
+        Transactions
+      </Typography>
       <Paper
         elevation={2}
         sx={{
-          width: "100%",
-          backgroundColor: "#b8b8d1",
+          width: "90%",
+          backgroundColor: "#f0f0f0",
           padding: 2,
           display: "flex",
           justifyContent: "center",
@@ -51,47 +50,53 @@ const Table = ({ selectedTripId }) => {
           <Card
             key={index}
             sx={{
-              width: "25%",
+              width: "23%",
               maxWidth: 200,
-              backgroundColor: "#959e9e",
+              backgroundColor: "#e0e0e0",
               margin: 1,
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
             }}
           >
-            <CardContent>
-              <Typography variant="h5" component="div">
-                Paid By: {data.selectedUser}
+            <CardContent sx={{ padding: 2 }}>
+              <Typography variant="subtitle1">
+                <strong>Paid By:</strong> {data.selectedUser}
               </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                Spent On: {data.desc}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginY: 1 }}
+              >
+                <strong>Spent On:</strong> {data.desc}
               </Typography>
-              <Typography variant="body2">Members Included:</Typography>
+              <Typography variant="body2">
+                <strong>Members Included:</strong>
+              </Typography>
               {data.selectedMembers.map((name, memberIndex) => (
                 <Typography
                   variant="body2"
                   component="ul"
                   key={memberIndex}
-                  sx={{ padding: 0, margin: 0 }}
+                  sx={{ padding: 0, margin: 0, listStyle: "none" }}
                 >
                   <li>{name}</li>
                 </Typography>
               ))}
-              <Typography variant="body2">
-                Amount Spent: {data.amount}
+              <Typography variant="body2" sx={{ marginTop: 1 }}>
+                <strong>Amount Spent:</strong> ₹{data.amount}
               </Typography>
             </CardContent>
-            <CardActions>
+            <CardActions sx={{ padding: 1, justifyContent: "flex-end" }}>
               <IconButton
                 aria-label="delete"
-                size="large"
+                size="small"
                 onClick={(e) => {
                   e.stopPropagation();
                   handleDeleteTrip(data.expenseId);
                 }}
               >
-                <DeleteIcon fontSize="inherit" />
+                <DeleteIcon fontSize="small" />
               </IconButton>
             </CardActions>
           </Card>

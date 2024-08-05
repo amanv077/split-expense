@@ -40,74 +40,94 @@ const Main = () => {
   return (
     <Box
       sx={{
-        "& > :not(style)": {
-          backgroundColor: "#b8b8d1",
-          padding: 5,
-        },
+        backgroundColor: "#F8F9FA",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 4,
       }}
     >
-      {!(openNewTrip || openOldTrip) && (
-        <Paper elevation={3}>
-          <Box
-            sx={{
-              padding: 2,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <h1>Split Your Expense Smartly</h1>
-          </Box>
-          <Box sx={{ display: "flex", flexDirection: "row" }}>
-            {trips.map((trip) => (
-              <Card
-                key={trip.tripId}
-                sx={{
-                  maxWidth: 275,
-                  backgroundColor: "#959e9e",
-                  margin: "3px",
-                  display: "flex",
-                  flexDirection: "row",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleCardClick(trip.tripId)}
-              >
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    Trip Name: {trip.tripName}
-                  </Typography>
-                  <h4> Trip Members:</h4>
-                  <ul>
-                    {trip.members.map((member, index) => (
-                      <li key={index}>{member}</li>
-                    ))}
-                  </ul>
-                </CardContent>
-                <CardActions>
-                  <IconButton
-                    aria-label="delete"
-                    size="large"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDeleteTrip(trip.tripId);
-                    }}
-                  >
-                    <DeleteIcon fontSize="inherit" />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            ))}
-          </Box>
+      <Paper
+        elevation={3}
+        sx={{
+          width: "100%",
+          maxWidth: 1200,
+          padding: 4,
+          backgroundColor: "white",
+        }}
+      >
+        <Box
+          sx={{
+            marginBottom: 4,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Typography variant="h4" component="h1" gutterBottom>
+            Split Your Expense Smartly
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: 2,
+          }}
+        >
+          {trips.map((trip) => (
+            <Card
+              key={trip.tripId}
+              sx={{
+                maxWidth: 300,
+                backgroundColor: "#959e9e",
+                cursor: "pointer",
+                "&:hover": {
+                  backgroundColor: "#b0b7b7",
+                },
+              }}
+              onClick={() => handleCardClick(trip.tripId)}
+            >
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  Trip Name: {trip.tripName}
+                </Typography>
+                <Typography variant="subtitle1" component="div">
+                  Trip Members:
+                </Typography>
+                <ul>
+                  {trip.members.map((member, index) => (
+                    <li key={index}>{member}</li>
+                  ))}
+                </ul>
+              </CardContent>
+              <CardActions>
+                <IconButton
+                  aria-label="delete"
+                  size="large"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteTrip(trip.tripId);
+                  }}
+                >
+                  <DeleteIcon fontSize="inherit" />
+                </IconButton>
+              </CardActions>
+            </Card>
+          ))}
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
           <Button
-            sx={{ margin: "45px" }}
             variant="contained"
-            type="submit"
+            color="primary"
             onClick={handleCreateNewTrip}
           >
             Create New Trip
           </Button>
-        </Paper>
-      )}
+        </Box>
+      </Paper>
     </Box>
   );
 };

@@ -11,8 +11,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+
 const pages = ["Products", "Pricing", "Blog"];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
@@ -37,10 +37,10 @@ function Navbar({ allExpense }) {
 
   return (
     <AppBar position="fixed">
-      <Container maxWidth="l">
+      <Container maxWidth="lg">
         <Toolbar disableGutters>
           <PointOfSaleIcon
-            sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+            sx={{ display: { xs: "none", md: "flex" }, mr: 2 }}
           />
           <Typography
             variant="h6"
@@ -97,7 +97,7 @@ function Navbar({ allExpense }) {
             </Menu>
           </Box>
           <PointOfSaleIcon
-            sx={{ display: { xs: "flex", md: "none" }, mr: 1 }}
+            sx={{ display: { xs: "flex", md: "none" }, mr: 2 }}
           />
           <Typography
             variant="h5"
@@ -115,14 +115,21 @@ function Navbar({ allExpense }) {
               textDecoration: "none",
             }}
           >
-            Split - Expense
+            Split-Expense
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  my: 2,
+                  color: "white",
+                  display: "block",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.1)",
+                  },
+                }}
               >
                 {page}
               </Button>
@@ -132,7 +139,7 @@ function Navbar({ allExpense }) {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="User Avatar" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

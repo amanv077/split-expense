@@ -2,6 +2,10 @@ import React, { useState, useMemo } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
 import { useNavigate } from "react-router-dom";
 
 const Overview = ({ allExpense, trip, selectedTripId }) => {
@@ -98,63 +102,76 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
     <Box
       sx={{
         display: "flex",
-        flexWrap: "wrap",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 3,
+        paddingTop: 8, // Ensures the content is not hidden behind the navbar
         "& > :not(style)": {
-          m: 3,
-          width: "100%",
-          backgroundColor: "#b8b8d1",
-          padding: 4,
+          width: "80%",
+          maxWidth: 800,
         },
       }}
     >
-      <Paper elevation={3}>
-        <Box sx={{ padding: 2 }}>
-          <h1>Complete Expense Summary</h1>
+      <Paper elevation={3} sx={{ padding: 3 }}>
+        <Box sx={{ textAlign: "center", marginBottom: 3 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Complete Expense Summary
+          </Typography>
+          <Typography variant="h6">
+            Total Trip Cost: ₹{totalAmount.toFixed(2)}
+          </Typography>
         </Box>
-        <Box sx={{ padding: 2, margin: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <h1>This Trip Cost To Group: {totalAmount}</h1>
-          </Box>
-
+        <Grid container spacing={2} sx={{ marginBottom: 3 }}>
           {memberPayInfo.map((member) => (
-            <Box key={member.name} sx={{ margin: 2 }}>
-              <h1>Name: {member.name}</h1>
-              <h4>Paid: {member.paid}</h4>
-              <h4>Cost: {member.spend}</h4>
-            </Box>
+            <Grid item xs={12} sm={6} md={4} key={member.name}>
+              <Card sx={{ padding: 2 }}>
+                <CardContent>
+                  <Typography variant="h6">Name: {member.name}</Typography>
+                  <Typography>Paid: ₹{member.paid.toFixed(2)}</Typography>
+                  <Typography>Cost: ₹{member.spend.toFixed(2)}</Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </Box>
-        <Box sx={{ padding: 2, margin: 2 }}>
+        </Grid>
+        <Box sx={{ textAlign: "center", marginBottom: 3 }}>
           <Button variant="contained" color="primary" onClick={handleFinalize}>
             Finalize
           </Button>
           <Button
-            sx={{ margin: "45px" }}
+            sx={{ marginLeft: 2 }}
             variant="contained"
-            type="button"
             onClick={() => navigate("/")}
           >
             Back
           </Button>
-          {summary.length > 0 && (
-            <Box sx={{ padding: 2, margin: 2 }}>
-              <h2>Summary:</h2>
+        </Box>
+        {summary.length > 0 && (
+          <Box sx={{ textAlign: "center", marginTop: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Settlement Summary
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginTop: 2,
+                padding: 2,
+                border: "1px solid #ddd",
+                borderRadius: 1,
+                backgroundColor: "#fafafa",
+              }}
+            >
               {summary.map((transaction, index) => (
-                <Box key={index} sx={{ margin: 2 }}>
-                  <h4>
-                    {transaction.from} will pay {transaction.to} an amount of{" "}
-                    {transaction.amount}
-                  </h4>
-                </Box>
+                <Typography key={index} sx={{ marginY: 1 }}>
+                  {transaction.from} will pay {transaction.to} an amount of ₹
+                  {transaction.amount.toFixed(2)}
+                </Typography>
               ))}
             </Box>
-          )}
-        </Box>
+          </Box>
+        )}
       </Paper>
     </Box>
   );

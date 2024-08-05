@@ -14,6 +14,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useStoreProvider } from "../../store";
 import Overview from "../OverviewDisplay/Overview";
 import Table from "../Data/Table";
+import { Typography } from "@mui/material";
 
 const NewExpense = () => {
   const { addNewExpense, allExpense, trips } = useStoreProvider();
@@ -101,19 +102,29 @@ const NewExpense = () => {
         "& > :not(style)": {
           m: 3,
           width: "70vw",
-          backgroundColor: "#b8b8d1",
-          padding: 8,
+          backgroundColor: "#F8F9FA",
+          padding: 4,
         },
       }}
     >
       <Paper elevation={10}>
-        <Box sx={{ padding: 2 }}>
-          <h1>Add New Expense for: {trip?.tripName}</h1>
-          <h4>The Trip Cost to Group Till Now: ₹ {totalCost}</h4>
+        <Box sx={{ padding: 2, textAlign: "center" }}>
+          <Typography variant="h4" component="h1">
+            Add New Expense for: {trip?.tripName}
+          </Typography>
+          <Typography variant="h6" component="h4" sx={{ marginTop: 2 }}>
+            The Trip Cost to Group Till Now: ₹ {totalCost}
+          </Typography>
         </Box>
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <TextField
-            sx={{ margin: 2 }}
+            sx={{ margin: 2, width: "80%" }}
             id="outlined-number"
             label="Amount"
             type="number"
@@ -127,25 +138,34 @@ const NewExpense = () => {
             required
             id="outlined-required"
             label="Spent On"
-            sx={{ margin: 2 }}
+            sx={{ margin: 2, width: "80%" }}
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
           />
         </Box>
-        <Box>
-          <h1>Paid By</h1>
+        <Box sx={{ marginTop: 3, textAlign: "center" }}>
+          <Typography variant="h5" component="h2">
+            Paid By
+          </Typography>
           <Autocomplete
             options={memberNames}
             value={selectedUser}
             onChange={(event, newValue) => setSelectedUser(newValue)}
             renderInput={(params) => (
-              <TextField {...params} label="Select User" variant="outlined" />
+              <TextField
+                {...params}
+                label="Select User"
+                variant="outlined"
+                sx={{ margin: 2, width: "80%" }}
+              />
             )}
           />
         </Box>
-        <Box sx={{ padding: 2 }}>
-          <h1>Members Included in Expense</h1>
-          <FormControl component="fieldset">
+        <Box sx={{ padding: 2, textAlign: "center" }}>
+          <Typography variant="h5" component="h2">
+            Members Included in Expense
+          </Typography>
+          <FormControl component="fieldset" sx={{ marginTop: 2 }}>
             <FormGroup>
               {memberNames && memberNames.length > 0 ? (
                 memberNames.map((name) => (
@@ -163,6 +183,7 @@ const NewExpense = () => {
                       />
                     }
                     label={name}
+                    sx={{ marginBottom: 1 }}
                   />
                 ))
               ) : (
@@ -172,33 +193,36 @@ const NewExpense = () => {
           </FormControl>
         </Box>
         {error && (
-          <Box sx={{ color: "red", padding: 2 }}>
-            <p>{error}</p>
+          <Box sx={{ color: "red", padding: 2, textAlign: "center" }}>
+            <Typography>{error}</Typography>
           </Box>
         )}
-        <Button
-          sx={{ margin: "45px" }}
-          variant="contained"
-          onClick={saveExpense}
-        >
-          Add New Expense
-        </Button>
-        <Button
-          sx={{ margin: "45px" }}
-          variant="contained"
-          type="button"
-          onClick={() => navigate("/")}
-        >
-          Back
-        </Button>
-        <Button
-          sx={{ margin: "45px" }}
-          variant="contained"
-          type="button"
-          onClick={() => setSummary(true)}
-        >
-          Summary
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "center", marginTop: 4 }}>
+          <Button
+            sx={{ margin: 2 }}
+            variant="contained"
+            color="primary"
+            onClick={saveExpense}
+          >
+            Add New Expense
+          </Button>
+          <Button
+            sx={{ margin: 2 }}
+            variant="contained"
+            color="secondary"
+            onClick={() => navigate("/")}
+          >
+            Back
+          </Button>
+          <Button
+            sx={{ margin: 2 }}
+            variant="contained"
+            color="secondary"
+            onClick={() => setSummary(true)}
+          >
+            Summary
+          </Button>
+        </Box>
         <Snackbar
           open={openSnackbar}
           autoHideDuration={5000}
