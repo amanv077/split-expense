@@ -12,7 +12,6 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -22,8 +21,9 @@ import ShareIcon from "@mui/icons-material/Share";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import PeopleIcon from "@mui/icons-material/People";
 import { useNavigate } from "react-router-dom";
+import MemberTransactionDialog from "./MemberTransactionDialog";
 
-const Overview = ({ allExpense, trip, selectedTripId }) => {
+const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
   const navigate = useNavigate();
 
   const filteredExpenses = useMemo(
@@ -77,6 +77,30 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
   });
 
   const [summary, setSummary] = useState([]);
+  const [selectedMember, setSelectedMember] = useState(null);
+
+  // Get transactions for a specific member
+  const getMemberTransactions = (memberName) => {
+    return filteredExpenses.filter((expense) => 
+      expense.selectedUser === memberName || 
+      expense.selectedMembers?.includes(memberName)
+    ).map((expense) => {
+      const isPayer = expense.selectedUser === memberName;
+      let memberShare = 0;
+      
+      if (expense.splitDetails) {
+        memberShare = expense.splitDetails[memberName] || 0;
+      } else {
+        memberShare = expense.amount / expense.selectedMembers.length;
+      }
+      
+      return {
+        ...expense,
+        isPayer,
+        memberShare,
+      };
+    });
+  };
 
   const calculateNetBalances = (memberPayInfo) => {
     return memberPayInfo.map((member) => ({
@@ -251,13 +275,16 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
                         <Grid item xs={12} sm={6} md={4} key={member.name}>
                           <Fade in timeout={200 + index * 50}>
                             <Card
+                              onClick={() => setSelectedMember(member.name)}
                               sx={{
                                 background: "#ffffff",
                                 border: "1px solid rgba(0, 0, 0, 0.06)",
                                 borderRadius: 1.5,
                                 transition: "all 150ms ease",
+                                cursor: "pointer",
                                 "&:hover": {
-                                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+                                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
+                                  borderColor: "#667eea",
                                 },
                               }}
                             >
@@ -285,16 +312,19 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
                                   </Typography>
                                 </Box>
                                 <Divider sx={{ my: 0.5 }} />
-                                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                   <Typography variant="caption" sx={{ fontWeight: 600 }}>
                                     Balance
                                   </Typography>
-                                  <Typography
-                                    variant="body2"
-                                    sx={{ fontWeight: 700, color }}
-                                  >
-                                    {balance >= 0 ? "+" : ""}₹{balance.toFixed(0)}
-                                  </Typography>
+                                  <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                    <Typography
+                                      variant="body2"
+                                      sx={{ fontWeight: 700, color }}
+                                    >
+                                      {balance >= 0 ? "+" : ""}₹{balance.toFixed(0)}
+                                    </Typography>
+                                    <Typography variant="caption" sx={{ color: "#667eea" }}>›</Typography>
+                                  </Box>
                                 </Box>
                               </CardContent>
                             </Card>
@@ -311,11 +341,11 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
             <Box sx={{ display: "flex", gap: 2, justifyContent: "center", mb: 2, px: { xs: 1.5, md: 2 } }}>
               <Button
                 variant="outlined"
-                onClick={() => navigate("/")}
+                onClick={onBack || (() => navigate("/"))}
                 startIcon={<ArrowBackIcon />}
                 size="small"
               >
-                Back to Home
+                Back
               </Button>
               <Button
                 variant="contained"
@@ -477,6 +507,15 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
           </Paper>
         </Fade>
       </Box>
+
+      {/* Member Transaction Dialog */}
+      <MemberTransactionDialog
+        open={!!selectedMember}
+        onClose={() => setSelectedMember(null)}
+        memberName={selectedMember}
+        memberInfo={memberPayInfo.find(m => m.name === selectedMember)}
+        transactions={selectedMember ? getMemberTransactions(selectedMember) : []}
+      />
     </Box>
   );
 };

@@ -194,6 +194,7 @@ const NewExpense = () => {
         allExpense={allExpense}
         trip={trip}
         selectedTripId={selectedTripId}
+        onBack={() => setSummary(false)}
       />
     );
   }
