@@ -68,6 +68,9 @@ const NewExpense = () => {
     return initial;
   });
 
+  // Track which fields are manually edited
+  const [lockedMembers, setLockedMembers] = useState({});
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [error, setError] = useState("");
 
@@ -78,9 +81,61 @@ const NewExpense = () => {
       initialIncluded[name] = true;
       initialCustom[name] = "";
     });
-    setIncludedMembers(initialIncluded);
     setCustomSplit(initialCustom);
+    setLockedMembers({});
   }, [memberNames]);
+
+  // Reset locks when split type changes
+  useEffect(() => {
+    setLockedMembers({});
+    const initialCustom = {};
+    memberNames.forEach((name) => {
+      initialCustom[name] = "";
+    });
+    setCustomSplit(initialCustom);
+  }, [splitType, memberNames]);
+
+  // Auto-distribute remaining amount/percentage
+  const handleSplitChange = (name, value) => {
+    const newValue = value;
+    
+    // Update locked status: if value is empty, unlock it; otherwise lock it
+    const newLockedMembers = { ...lockedMembers };
+    if (newValue === "" || isNaN(parseFloat(newValue))) {
+      delete newLockedMembers[name];
+    } else {
+      newLockedMembers[name] = true;
+    }
+    setLockedMembers(newLockedMembers);
+
+    // Update the custom split for the changed member
+    let newCustomSplit = { ...customSplit, [name]: newValue };
+    
+    // Distribute remaining among unlocked members
+    const unlockedMembers = memberNames.filter((m) => !newLockedMembers[m]);
+    
+    if (unlockedMembers.length > 0) {
+      const totalTarget = splitType === "percentage" ? 100 : (parseFloat(amount) || 0);
+      
+      // Calculate how much is taken by locked members
+      let lockedTotal = 0;
+      Object.keys(newLockedMembers).forEach((member) => {
+        // Use the new value for the current member being edited, or existing state for others
+        const val = member === name ? newValue : newCustomSplit[member];
+        lockedTotal += parseFloat(val) || 0;
+      });
+
+      const remaining = Math.max(0, totalTarget - lockedTotal);
+      const perPerson = remaining / unlockedMembers.length;
+
+      // Update remaining members
+      unlockedMembers.forEach((member) => {
+        newCustomSplit[member] = perPerson > 0 ? (splitType === "percentage" ? perPerson.toFixed(1) : perPerson.toFixed(2)) : "";
+      });
+    }
+
+    setCustomSplit(newCustomSplit);
+  };
 
   // Calculate split preview
   const splitPreview = useMemo(() => {
@@ -174,6 +229,7 @@ const NewExpense = () => {
     });
     setIncludedMembers(resetIncluded);
     setCustomSplit(resetCustom);
+    setLockedMembers({});
     setError("");
     setOpenSnackbar(true);
   };
@@ -446,7 +502,7 @@ const NewExpense = () => {
                             size="small"
                             placeholder={splitType === "percentage" ? "0" : "0.00"}
                             value={customSplit[name]}
-                            onChange={(e) => setCustomSplit((prev) => ({ ...prev, [name]: e.target.value }))}
+                            onChange={(e) => handleSplitChange(name, e.target.value)}
                             InputProps={{
                               endAdornment: splitType === "percentage" 
                                 ? <Typography variant="body2" sx={{ color: "text.secondary" }}>%</Typography>
