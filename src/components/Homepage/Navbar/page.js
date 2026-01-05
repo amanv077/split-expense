@@ -5,7 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import HomeIcon from "@mui/icons-material/Home";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -23,14 +22,14 @@ function Navbar() {
       position="fixed"
       elevation={0}
       sx={{
-        background: "rgba(255, 255, 255, 0.85)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
+        background: "rgba(255, 255, 255, 0.72)",
+        backdropFilter: "saturate(180%) blur(20px)",
+        WebkitBackdropFilter: "saturate(180%) blur(20px)",
         borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
       }}
     >
       <Container maxWidth="lg">
-        <Toolbar disableGutters sx={{ minHeight: { xs: 64, sm: 70 } }}>
+        <Toolbar disableGutters sx={{ minHeight: { xs: 48, sm: 52 }, py: 0.5 }}>
           {/* Logo & Brand */}
           <Box
             onClick={handleHomeClick}
@@ -38,36 +37,20 @@ function Navbar() {
               display: "flex",
               alignItems: "center",
               cursor: "pointer",
-              transition: "opacity 200ms ease",
+              transition: "opacity 150ms ease",
               "&:hover": {
-                opacity: 0.8,
+                opacity: 0.7,
               },
             }}
           >
-            <Box
-              sx={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                borderRadius: "12px",
-                padding: "8px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mr: 1.5,
-              }}
-            >
-              <AccountBalanceWalletIcon sx={{ color: "white", fontSize: 24 }} />
-            </Box>
             <Typography
               variant="h6"
               noWrap
               sx={{
-                fontWeight: 700,
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                letterSpacing: "-0.5px",
-                fontSize: { xs: "1.1rem", sm: "1.25rem" },
+                fontWeight: 600,
+                color: "#1d1d1f",
+                letterSpacing: "-0.02em",
+                fontSize: { xs: "1rem", sm: "1.1rem" },
               }}
             >
               Splitify
@@ -80,19 +63,19 @@ function Navbar() {
           {/* Navigation Actions */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {location.pathname !== "/" && (
-              <Tooltip title="Go to Home">
+              <Tooltip title="Home">
                 <IconButton
                   onClick={handleHomeClick}
+                  size="small"
                   sx={{
-                    color: "#667eea",
-                    transition: "all 200ms ease",
+                    color: "#1d1d1f",
+                    transition: "all 150ms ease",
                     "&:hover": {
-                      background: "rgba(102, 126, 234, 0.08)",
-                      transform: "scale(1.05)",
+                      background: "rgba(0, 0, 0, 0.04)",
                     },
                   }}
                 >
-                  <HomeIcon />
+                  <HomeIcon sx={{ fontSize: 20 }} />
                 </IconButton>
               </Tooltip>
             )}

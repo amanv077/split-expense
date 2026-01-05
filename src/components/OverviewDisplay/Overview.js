@@ -12,6 +12,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -158,75 +159,36 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 134px)",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)",
-        py: { xs: 2, md: 4 },
+        minHeight: "calc(100vh - 100px)",
+        background: "#ffffff",
+        py: { xs: 3, md: 4 },
         px: { xs: 2, md: 3 },
       }}
     >
-      <Box sx={{ maxWidth: 900, mx: "auto" }}>
-        <Fade in timeout={400}>
-          <Paper
-            elevation={0}
-            sx={{
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.5)",
-              borderRadius: 3,
-              overflow: "hidden",
-            }}
-          >
+      <Box sx={{ maxWidth: 680, mx: "auto" }}>
+        <Fade in timeout={300}>
+          <Box>
             {/* Header */}
-            <Box
-              sx={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                px: 3,
-                py: 3,
-                textAlign: "center",
-              }}
-            >
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: "50%",
-                  background: "rgba(255, 255, 255, 0.2)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  mx: "auto",
-                  mb: 2,
-                }}
-              >
-                <AccountBalanceIcon sx={{ color: "white", fontSize: 28 }} />
-              </Box>
-              <Typography variant="h5" sx={{ color: "white", fontWeight: 600 }}>
-                Expense Summary
+            <Box sx={{ mb: 3, textAlign: "center" }}>
+              <Typography variant="h4" sx={{ fontWeight: 600, color: "#1d1d1f", letterSpacing: "-0.02em", mb: 0.5 }}>
+                Summary
               </Typography>
-              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", mt: 0.5 }}>
+              <Typography variant="body2" sx={{ color: "#86868b", mb: 2 }}>
                 {trip?.tripName}
               </Typography>
-              <Box
+              <Typography
+                variant="h3"
                 sx={{
-                  mt: 2,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  background: "rgba(255, 255, 255, 0.2)",
-                  borderRadius: 2,
-                  px: 2,
-                  py: 1,
+                  fontWeight: 600,
+                  color: "#1d1d1f",
+                  letterSpacing: "-0.02em",
                 }}
               >
-                <CurrencyRupeeIcon sx={{ color: "white", fontSize: 20 }} />
-                <Typography variant="h5" sx={{ color: "white", fontWeight: 700 }}>
-                  {totalAmount.toFixed(2)}
-                </Typography>
-                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", ml: 0.5 }}>
-                  total
-                </Typography>
-              </Box>
+                ₹{totalAmount.toFixed(0)}
+              </Typography>
+              <Typography variant="caption" sx={{ color: "#86868b" }}>
+                total spent
+              </Typography>
             </Box>
 
             {/* Member Breakdown - Collapsible */}
@@ -239,28 +201,26 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
                   "&:before": { display: "none" },
                   "& .MuiAccordionSummary-root": {
                     minHeight: "auto",
-                    px: 1,
-                    py: 0.5,
-                    borderRadius: 1.5,
-                    background: "rgba(102, 126, 234, 0.05)",
+                    px: 0,
+                    py: 1,
                     "&:hover": {
-                      background: "rgba(102, 126, 234, 0.1)",
+                      background: "transparent",
                     },
                   },
                   "& .MuiAccordionSummary-content": {
-                    my: 0.5,
+                    my: 0,
                   },
                   "& .MuiAccordionDetails-root": {
                     px: 0,
-                    pt: 1.5,
+                    pt: 1,
                     pb: 0,
                   },
                 }}
               >
                 <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: "#667eea" }} />}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <PeopleIcon sx={{ color: "#667eea", fontSize: 18 }} />
-                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#667eea" }}>
+                    <PeopleIcon sx={{ color: "#86868b", fontSize: 18 }} />
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: "#86868b" }}>
                       Member Breakdown ({trip?.members?.length || 0})
                     </Typography>
                   </Box>
@@ -278,13 +238,14 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
                               onClick={() => setSelectedMember(member.name)}
                               sx={{
                                 background: "#ffffff",
-                                border: "1px solid rgba(0, 0, 0, 0.06)",
-                                borderRadius: 1.5,
+                                border: "1px solid #e2e8f0",
+                                borderRadius: 2.5,
                                 transition: "all 150ms ease",
                                 cursor: "pointer",
                                 "&:hover": {
-                                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.12)",
-                                  borderColor: "#667eea",
+                                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.05)",
+                                  borderColor: "#d2d2d7",
+                                  transform: "translateY(-1px)",
                                 },
                               }}
                             >
@@ -363,42 +324,45 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
                 <Paper
                   elevation={0}
                   sx={{
-                    background: "linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)",
-                    border: "1px solid rgba(102, 126, 234, 0.3)",
-                    borderRadius: 2,
-                    p: { xs: 1.5, sm: 2.5 },
+                    background: "#f5f5f7",
+                    border: "none",
+                    borderRadius: 3,
+                    p: { xs: 2, sm: 3 },
                   }}
                 >
                   <Typography
-                    variant="subtitle1"
+                    variant="h6"
                     sx={{
-                      fontWeight: 700,
-                      mb: 1.5,
+                      fontWeight: 600,
+                      mb: 2,
                       textAlign: "center",
-                      background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      WebkitBackgroundClip: "text",
-                      WebkitTextFillColor: "transparent",
-                      backgroundClip: "text",
+                      color: "#1d1d1f",
                     }}
                   >
                     ✨ Settlement Plan
                   </Typography>
                   
                   {/* Settlement Cards */}
-                  <Box sx={{ display: "flex", flexDirection: "column", gap: 1, mb: 2 }}>
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5, mb: 3 }}>
                     {summary.map((transaction, index) => (
                       <Paper
                         key={index}
                         elevation={0}
                         sx={{
-                          p: { xs: 1.25, sm: 1.5 },
-                          background: "white",
-                          borderRadius: 1.5,
-                          border: "1px solid rgba(0, 0, 0, 0.08)",
-                          animation: `slideIn 200ms ease ${index * 50}ms forwards`,
+                          p: { xs: 1.5, sm: 2 },
+                          background: "#ffffff",
+                          borderRadius: 2,
+                          border: "1px solid rgba(0, 0, 0, 0.04)",
+                          transition: "all 0.2s ease",
+                          "&:hover": {
+                            transform: "scale(1.01)",
+                            background: "#fafafa",
+                          },
+                          animation: `slideIn 300ms cubic-bezier(0.2, 0.8, 0.2, 1) ${index * 60}ms forwards`,
                           opacity: 0,
                           "@keyframes slideIn": {
-                            to: { opacity: 1 },
+                            from: { opacity: 0, transform: "translateY(10px)" },
+                            to: { opacity: 1, transform: "translateY(0)" },
                           },
                         }}
                       >
@@ -406,47 +370,68 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
                           display: "flex", 
                           alignItems: "center", 
                           justifyContent: "space-between",
-                          gap: 1,
+                          gap: 1.5,
                         }}>
-                          {/* Payer */}
-                          <Box sx={{ 
-                            background: "#fee2e2", 
-                            px: 1.5, 
-                            py: 0.5, 
-                            borderRadius: 1,
-                            flex: 1,
-                            textAlign: "center",
-                          }}>
-                            <Typography variant="body2" sx={{ fontWeight: 700, color: "#dc2626" }}>
-                              {transaction.from}
-                            </Typography>
+                          {/* From / Payer */}
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flex: 1, minWidth: 0 }}>
+                            <Box sx={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: "50%",
+                              background: "#dc2626",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "0.85rem",
+                              fontWeight: 600,
+                              boxShadow: "0 2px 4px rgba(220, 38, 38, 0.2)",
+                            }}>
+                              {transaction.from.charAt(0).toUpperCase()}
+                            </Box>
+                            <Box sx={{ minWidth: 0 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: "#1d1d1f", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {transaction.from}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: "#86868b" }}>
+                                Payer
+                              </Typography>
+                            </Box>
                           </Box>
-                          
-                          {/* Pays Label + Amount */}
-                          <Box sx={{ textAlign: "center", px: 0.5 }}>
-                            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", lineHeight: 1 }}>
-                              pays
-                            </Typography>
-                            <Typography variant="body1" sx={{ fontWeight: 700, color: "#667eea", lineHeight: 1.2 }}>
+
+                          {/* Arrow & Amount */}
+                          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", minWidth: 80 }}>
+                             <Typography variant="body2" sx={{ fontWeight: 700, color: "#1d1d1f", mb: -0.5 }}>
                               ₹{transaction.amount.toFixed(0)}
                             </Typography>
-                            <Typography variant="caption" sx={{ color: "text.secondary", display: "block", lineHeight: 1 }}>
-                              to
-                            </Typography>
+                             <ArrowForwardIcon sx={{ color: "#d2d2d7", fontSize: 18, my: 0.5 }} />
                           </Box>
-                          
-                          {/* Receiver */}
-                          <Box sx={{ 
-                            background: "#dcfce7", 
-                            px: 1.5, 
-                            py: 0.5, 
-                            borderRadius: 1,
-                            flex: 1,
-                            textAlign: "center",
-                          }}>
-                            <Typography variant="body2" sx={{ fontWeight: 700, color: "#16a34a" }}>
-                              {transaction.to}
-                            </Typography>
+
+                          {/* To / Receiver */}
+                          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, flex: 1, minWidth: 0, justifyContent: "flex-end" }}>
+                            <Box sx={{ textAlign: "right", minWidth: 0 }}>
+                              <Typography variant="body2" sx={{ fontWeight: 600, color: "#1d1d1f", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                                {transaction.to}
+                              </Typography>
+                              <Typography variant="caption" sx={{ color: "#86868b" }}>
+                                Receiver
+                              </Typography>
+                            </Box>
+                             <Box sx={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: "50%",
+                              background: "#16a34a",
+                              color: "white",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              fontSize: "0.85rem",
+                              fontWeight: 600,
+                              boxShadow: "0 2px 4px rgba(22, 163, 74, 0.2)",
+                            }}>
+                              {transaction.to.charAt(0).toUpperCase()}
+                            </Box>
                           </Box>
                         </Box>
                       </Paper>
@@ -482,9 +467,11 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
                       }}
                       size="small"
                       sx={{
-                        background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                        borderRadius: 3,
+                        fontWeight: 500,
+                        background: "#34c759",
                         "&:hover": {
-                          background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                          background: "#2fab4f",
                         },
                       }}
                     >
@@ -504,7 +491,7 @@ const Overview = ({ allExpense, trip, selectedTripId, onBack }) => {
               </Typography>
             )}
             </Box>
-          </Paper>
+          </Box>
         </Fade>
       </Box>
 

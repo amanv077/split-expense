@@ -1,6 +1,5 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import {
   Button,
   Card,
@@ -13,8 +12,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
-import GroupsIcon from "@mui/icons-material/Groups";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { useStoreProvider } from "../../../store";
 import { useNavigate } from "react-router-dom";
 
@@ -37,46 +34,47 @@ const Main = () => {
 
   // Empty state when no trips exist
   const EmptyState = () => (
-    <Fade in timeout={500}>
+    <Fade in timeout={400}>
       <Box
         sx={{
           textAlign: "center",
-          py: 8,
+          py: { xs: 8, md: 12 },
           px: 3,
         }}
       >
-        <Box
-          sx={{
-            width: 100,
-            height: 100,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            mx: "auto",
-            mb: 3,
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            fontWeight: 600, 
+            mb: 1.5, 
+            color: "#1d1d1f",
+            letterSpacing: "-0.02em",
           }}
         >
-          <FlightTakeoffIcon sx={{ fontSize: 48, color: "#667eea" }} />
-        </Box>
-        <Typography variant="h5" sx={{ fontWeight: 600, mb: 1, color: "text.primary" }}>
           No trips yet
         </Typography>
-        <Typography variant="body1" sx={{ color: "text.secondary", mb: 4, maxWidth: 400, mx: "auto" }}>
-          Create your first trip and start splitting expenses with friends and family.
+        <Typography 
+          variant="body1" 
+          sx={{ 
+            color: "#86868b", 
+            mb: 4, 
+            maxWidth: 380, 
+            mx: "auto",
+            lineHeight: 1.5,
+          }}
+        >
+          Create your first trip and start splitting expenses with friends.
         </Typography>
         <Button
           variant="contained"
           size="large"
-          startIcon={<AddIcon />}
           onClick={handleCreateNewTrip}
           sx={{
             px: 4,
             py: 1.5,
           }}
         >
-          Create Your First Trip
+          Create Trip
         </Button>
       </Box>
     </Fade>
@@ -85,194 +83,178 @@ const Main = () => {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 134px)",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)",
-        py: { xs: 3, md: 5 },
+        minHeight: "calc(100vh - 120px)",
+        background: "#ffffff",
+        py: { xs: 4, md: 6 },
         px: { xs: 2, md: 3 },
       }}
     >
       <Box
         sx={{
-          maxWidth: 1200,
+          maxWidth: 980,
           mx: "auto",
         }}
       >
         {/* Header Section */}
         <Fade in timeout={300}>
-          <Box sx={{ textAlign: "center", mb: { xs: 4, md: 5 } }}>
+          <Box sx={{ textAlign: "center", mb: { xs: 5, md: 6 } }}>
             <Typography
-              variant="h3"
+              variant="h2"
               component="h1"
               sx={{
-                fontWeight: 700,
-                mb: 1.5,
-                fontSize: { xs: "1.75rem", sm: "2rem", md: "2.5rem" },
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                fontWeight: 600,
+                mb: 1,
+                fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                color: "#1d1d1f",
+                letterSpacing: "-0.025em",
               }}
             >
-              Split Expenses Smartly
+              Splitify
             </Typography>
             <Typography
               variant="body1"
               sx={{
-                color: "text.secondary",
-                maxWidth: 500,
+                color: "#86868b",
+                maxWidth: 400,
                 mx: "auto",
-                fontSize: { xs: "0.9rem", md: "1rem" },
+                fontSize: { xs: "1rem", md: "1.125rem" },
               }}
             >
-              Manage trip expenses and settle debts easily with friends
+              Split expenses smartly with friends
             </Typography>
           </Box>
         </Fade>
 
         {/* Main Content */}
-        <Paper
-          elevation={0}
-          sx={{
-            background: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)",
-            borderRadius: 3,
-            overflow: "hidden",
-          }}
-        >
-          {trips.length === 0 ? (
-            <EmptyState />
-          ) : (
-            <Box sx={{ p: { xs: 2, md: 4 } }}>
-              {/* Trip Cards Grid */}
-              <Box
-                sx={{
-                  display: "grid",
-                  gridTemplateColumns: {
-                    xs: "1fr",
-                    sm: "repeat(2, 1fr)",
-                    md: "repeat(3, 1fr)",
-                  },
-                  gap: { xs: 2, md: 3 },
-                  mb: 4,
-                }}
-              >
-                {trips.map((trip, index) => (
-                  <Fade in timeout={300 + index * 100} key={trip.tripId}>
-                    <Card
-                      sx={{
-                        cursor: "pointer",
-                        background: "#ffffff",
-                        border: "1px solid rgba(0, 0, 0, 0.06)",
-                        position: "relative",
-                        overflow: "visible",
-                        "&:hover": {
-                          borderColor: "#667eea",
-                          transform: "translateY(-4px)",
-                          boxShadow: "0 12px 24px rgba(102, 126, 234, 0.15)",
-                        },
-                        "&::before": {
-                          content: '""',
-                          position: "absolute",
-                          top: 0,
-                          left: 0,
-                          right: 0,
-                          height: "4px",
-                          background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
-                          borderRadius: "16px 16px 0 0",
-                        },
-                      }}
-                      onClick={() => handleCardClick(trip.tripId)}
-                    >
-                      <CardContent sx={{ p: 3 }}>
-                        {/* Trip Name */}
-                        <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", mb: 2 }}>
-                          <Typography
-                            variant="h6"
+        {trips.length === 0 ? (
+          <EmptyState />
+        ) : (
+          <Box>
+            {/* Trip Cards Grid */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(3, 1fr)",
+                },
+                gap: { xs: 2, md: 2.5 },
+                mb: 5,
+              }}
+            >
+              {trips.map((trip, index) => (
+                <Fade in timeout={200 + index * 50} key={trip.tripId}>
+                  <Card
+                    sx={{
+                      cursor: "pointer",
+                      background: "#ffffff",
+                      border: "1px solid #e8e8ed",
+                      boxShadow: "none",
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      transition: "all 150ms ease",
+                      "&:hover": {
+                        borderColor: "#d2d2d7",
+                        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
+                      },
+                    }}
+                    onClick={() => handleCardClick(trip.tripId)}
+                  >
+                    <CardContent sx={{ p: 2, flex: 1, display: "flex", flexDirection: "column" }}>
+                      {/* Trip Name & Delete */}
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: 600,
+                            color: "#1d1d1f",
+                            fontSize: "0.9375rem",
+                            letterSpacing: "-0.01em",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                            flex: 1,
+                            mr: 1,
+                          }}
+                        >
+                          {trip.tripName}
+                        </Typography>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            size="small"
+                            onClick={(e) => handleDeleteTrip(e, trip.tripId)}
                             sx={{
-                              fontWeight: 600,
-                              color: "text.primary",
-                              flex: 1,
-                              mr: 1,
+                              color: "#aeaeb2",
+                              p: 0.25,
+                              "&:hover": {
+                                color: "#ff3b30",
+                                background: "transparent",
+                              },
                             }}
                           >
-                            {trip.tripName}
-                          </Typography>
-                          <Tooltip title="Delete Trip">
-                            <IconButton
-                              size="small"
-                              onClick={(e) => handleDeleteTrip(e, trip.tripId)}
-                              sx={{
-                                color: "text.secondary",
-                                "&:hover": {
-                                  color: "#ef4444",
-                                  background: "rgba(239, 68, 68, 0.1)",
-                                },
-                              }}
-                            >
-                              <DeleteIcon fontSize="small" />
-                            </IconButton>
-                          </Tooltip>
-                        </Box>
+                            <DeleteIcon sx={{ fontSize: 16 }} />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
 
-                        {/* Members */}
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-                          <GroupsIcon sx={{ color: "text.secondary", fontSize: 18 }} />
-                          <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                            {trip.members.length} members
-                          </Typography>
-                        </Box>
+                      {/* Members count */}
+                      <Typography variant="caption" sx={{ color: "#86868b", mb: 1.5 }}>
+                        {trip.members.length} member{trip.members.length !== 1 ? "s" : ""}
+                      </Typography>
 
-                        {/* Member chips */}
-                        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
-                          {trip.members.slice(0, 3).map((member) => (
-                            <Chip
-                              key={member}
-                              label={member}
-                              size="small"
-                              sx={{
-                                background: "rgba(102, 126, 234, 0.1)",
-                                color: "#667eea",
-                                fontWeight: 500,
-                                fontSize: "0.75rem",
-                              }}
-                            />
-                          ))}
-                          {trip.members.length > 3 && (
-                            <Chip
-                              label={`+${trip.members.length - 3}`}
-                              size="small"
-                              sx={{
-                                background: "rgba(118, 75, 162, 0.1)",
-                                color: "#764ba2",
-                                fontWeight: 500,
-                                fontSize: "0.75rem",
-                              }}
-                            />
-                          )}
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Fade>
-                ))}
-              </Box>
-
-              {/* Create New Trip Button */}
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  startIcon={<AddIcon />}
-                  onClick={handleCreateNewTrip}
-                  sx={{ px: 4 }}
-                >
-                  Create New Trip
-                </Button>
-              </Box>
+                      {/* Member chips - pushed to bottom */}
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, mt: "auto" }}>
+                        {trip.members.slice(0, 3).map((member) => (
+                          <Chip
+                            key={member}
+                            label={member}
+                            size="small"
+                            sx={{
+                              height: 22,
+                              background: "#f5f5f7",
+                              color: "#1d1d1f",
+                              fontWeight: 400,
+                              fontSize: "0.6875rem",
+                              "& .MuiChip-label": {
+                                px: 1,
+                              },
+                            }}
+                          />
+                        ))}
+                        {trip.members.length > 3 && (
+                          <Chip
+                            label={`+${trip.members.length - 3}`}
+                            size="small"
+                            sx={{
+                              height: 22,
+                              background: "#f5f5f7",
+                              color: "#86868b",
+                              fontWeight: 500,
+                              fontSize: "0.6875rem",
+                            }}
+                          />
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Fade>
+              ))}
             </Box>
-          )}
-        </Paper>
+
+            {/* Create New Trip Button */}
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
+              <Button
+                variant="contained"
+                onClick={handleCreateNewTrip}
+                sx={{ px: 4 }}
+              >
+                New Trip
+              </Button>
+            </Box>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -203,21 +203,22 @@ const NewExpense = () => {
     return (
       <Box
         sx={{
-          minHeight: "calc(100vh - 134px)",
+          minHeight: "calc(100vh - 100px)",
+          background: "#ffffff",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           p: 3,
         }}
       >
-        <Paper sx={{ p: 4, textAlign: "center" }}>
-          <Typography variant="h6" sx={{ mb: 2 }}>
+        <Box sx={{ textAlign: "center" }}>
+          <Typography variant="h6" sx={{ mb: 2, color: "#1d1d1f" }}>
             Trip not found
           </Typography>
           <Button variant="contained" onClick={() => navigate("/")}>
             Go Home
           </Button>
-        </Paper>
+        </Box>
       </Box>
     );
   }
@@ -225,62 +226,52 @@ const NewExpense = () => {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 134px)",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)",
-        py: { xs: 2, md: 4 },
+        minHeight: "calc(100vh - 100px)",
+        background: "#ffffff",
+        py: { xs: 3, md: 4 },
         px: { xs: 2, md: 3 },
       }}
     >
-      <Box sx={{ maxWidth: 1000, mx: "auto" }}>
-        {/* Add Expense Form */}
-        <Fade in timeout={400}>
-          <Paper
-            elevation={0}
+      <Box sx={{ maxWidth: 680, mx: "auto" }}>
+        {/* Header */}
+        <Fade in timeout={200}>
+          <Box sx={{ mb: 3 }}>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+              <Box>
+                <Typography variant="h5" sx={{ fontWeight: 600, color: "#1d1d1f", letterSpacing: "-0.02em" }}>
+                  {trip?.tripName}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#86868b", mt: 0.25 }}>
+                  Add expenses
+                </Typography>
+              </Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 600,
+                  color: "#1d1d1f",
+                  background: "#f5f5f7",
+                  px: 2,
+                  py: 0.75,
+                  borderRadius: 2,
+                }}
+              >
+                ₹{totalCost.toFixed(0)}
+              </Typography>
+            </Box>
+          </Box>
+        </Fade>
+
+        {/* Form Card */}
+        <Fade in timeout={300}>
+          <Box
             sx={{
-              background: "rgba(255, 255, 255, 0.9)",
-              backdropFilter: "blur(10px)",
-              WebkitBackdropFilter: "blur(10px)",
-              border: "1px solid rgba(255, 255, 255, 0.5)",
+              background: "#f5f5f7",
               borderRadius: 3,
-              overflow: "hidden",
+              p: { xs: 2, md: 3 },
               mb: 3,
             }}
           >
-            {/* Header */}
-            <Box
-              sx={{
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                px: 3,
-                py: 2.5,
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
-                <Box>
-                  <Typography variant="h5" sx={{ color: "white", fontWeight: 600, display: "flex", alignItems: "center", gap: 1 }}>
-                    <ReceiptLongIcon />
-                    {trip?.tripName}
-                  </Typography>
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", mt: 0.5 }}>
-                    Add and manage expenses for this trip
-                  </Typography>
-                </Box>
-                <Chip
-                  icon={<CurrencyRupeeIcon sx={{ color: "white !important" }} />}
-                  label={`Total: ₹${totalCost.toFixed(2)}`}
-                  sx={{
-                    background: "rgba(255, 255, 255, 0.2)",
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    py: 2,
-                    "& .MuiChip-icon": { color: "white" },
-                  }}
-                />
-              </Box>
-            </Box>
-
-            {/* Form */}
-            <Box sx={{ p: { xs: 2, md: 3 } }}>
               <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2, mb: 3 }}>
                 <TextField
                   label="Amount"
@@ -331,23 +322,31 @@ const NewExpense = () => {
                   size="small"
                   sx={{ 
                     display: "flex", 
-                    flexWrap: "wrap",
+                    width: "100%",
+                    p: 0.5,
+                    background: "#e8e8ed",
+                    borderRadius: "10px !important",
                     "& .MuiToggleButton-root": {
-                      flex: { xs: "1 1 30%", sm: "1 1 auto" },
+                      flex: 1,
                       py: 0.75,
-                      px: 1.5,
-                      fontSize: "0.8rem",
-                      borderRadius: "6px !important",
-                      border: "1px solid #e2e8f0 !important",
-                      mx: 0.25,
-                      my: 0.25,
+                      px: 2,
+                      fontSize: "0.85rem",
+                      fontWeight: 500,
+                      borderRadius: "8px !important",
+                      border: "none !important",
+                      color: "#1d1d1f",
+                      textTransform: "none",
+                      transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
                       "&.Mui-selected": {
-                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        color: "white",
-                        borderColor: "#667eea !important",
+                        background: "#ffffff !important",
+                        color: "#000000 !important",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.08)",
                         "&:hover": {
-                          background: "linear-gradient(135deg, #5a71e4 0%, #693f96 100%)",
+                          background: "#ffffff !important",
                         },
+                      },
+                      "&:hover": {
+                        background: "rgba(255,255,255,0.5)",
                       },
                     },
                   }}
@@ -385,11 +384,13 @@ const NewExpense = () => {
                       }
                       sx={{
                         background: (splitType === "percentage" ? Math.abs(totalPercentage - 100) < 0.01 : Math.abs(totalSplitAmount - parseFloat(amount || 0)) < 0.01)
-                          ? "#dcfce7"
-                          : "#fef3c7",
+                          ? "rgba(52, 199, 89, 0.1)"
+                          : "rgba(255, 149, 0, 0.1)",
                         color: (splitType === "percentage" ? Math.abs(totalPercentage - 100) < 0.01 : Math.abs(totalSplitAmount - parseFloat(amount || 0)) < 0.01)
-                          ? "#16a34a"
-                          : "#d97706",
+                          ? "#34c759"
+                          : "#ff9500",
+                        fontWeight: 600,
+                        border: "none"
                       }}
                     />
                   )}
@@ -403,9 +404,9 @@ const NewExpense = () => {
                       elevation={0}
                       sx={{
                         p: 1,
-                        borderRadius: 1.5,
-                        border: splitPreview[name] > 0 ? "1px solid #667eea" : "1px solid #e2e8f0",
-                        background: splitPreview[name] > 0 ? "rgba(102, 126, 234, 0.03)" : "white",
+                        borderRadius: 2,
+                        border: splitPreview[name] > 0 ? "1px solid #0071e3" : "1px solid #e5e5ea",
+                        background: splitPreview[name] > 0 ? "rgba(0, 113, 227, 0.04)" : "#ffffff",
                         transition: "all 150ms ease",
                       }}
                     >
@@ -429,8 +430,8 @@ const NewExpense = () => {
                               size="small"
                               sx={{ 
                                 p: 0.5,
-                                color: "#667eea",
-                                "&.Mui-checked": { color: "#667eea" },
+                                color: "#0071e3",
+                                "&.Mui-checked": { color: "#0071e3" },
                               }}
                             />
                           )}
@@ -468,7 +469,7 @@ const NewExpense = () => {
                             variant="body2" 
                             sx={{ 
                               fontWeight: 700,
-                              color: splitPreview[name] > 0 ? "#667eea" : "text.secondary",
+                              color: splitPreview[name] > 0 ? "#0071e3" : "text.secondary",
                             }}
                           >
                             ₹{splitPreview[name].toFixed(2)}
@@ -517,7 +518,6 @@ const NewExpense = () => {
                   </Button>
                   <Button
                     variant="outlined"
-                    color="secondary"
                     onClick={() => setSummary(true)}
                     startIcon={<SummarizeIcon />}
                     size="small"
@@ -526,8 +526,7 @@ const NewExpense = () => {
                   </Button>
                 </Box>
               </Box>
-            </Box>
-          </Paper>
+          </Box>
         </Fade>
 
         {/* Expenses Table */}

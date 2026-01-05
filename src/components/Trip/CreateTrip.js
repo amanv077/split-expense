@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
@@ -10,7 +9,6 @@ import Snackbar from "@mui/material/Snackbar";
 import Fade from "@mui/material/Fade";
 import CircularProgress from "@mui/material/CircularProgress";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { v4 as uuidv4 } from "uuid";
@@ -36,7 +34,7 @@ const CreateTrip = () => {
 
   const createNewTrip = (e) => {
     e.preventDefault();
-    if (isLoading) return; // Prevent double submission
+    if (isLoading) return;
     
     if (!tripName) {
       setError("Please enter a trip name.");
@@ -65,7 +63,7 @@ const CreateTrip = () => {
       (member) => member.toLowerCase() === newMember.toLowerCase()
     );
     if (alreadyExist) {
-      setError("This member already exists. Enter a different name.");
+      setError("This member already exists.");
     } else {
       setMembers((prev) => [...prev, newMember.trim()]);
       setNewMember("");
@@ -86,13 +84,13 @@ const CreateTrip = () => {
     }
   };
 
-  // Loading overlay
+  // Loading/Success overlay
   if (isLoading) {
     return (
       <Box
         sx={{
-          minHeight: "calc(100vh - 134px)",
-          background: "linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)",
+          minHeight: "calc(100vh - 100px)",
+          background: "#ffffff",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
@@ -100,41 +98,30 @@ const CreateTrip = () => {
           gap: 3,
         }}
       >
-        <Fade in timeout={300}>
-          <Box
-            sx={{
-              textAlign: "center",
-              p: 4,
-            }}
-          >
+        <Fade in timeout={200}>
+          <Box sx={{ textAlign: "center", p: 4 }}>
             <Box
               sx={{
-                width: 80,
-                height: 80,
+                width: 64,
+                height: 64,
                 borderRadius: "50%",
-                background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                background: "#34c759",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 mx: "auto",
                 mb: 3,
-                boxShadow: "0 10px 40px rgba(102, 126, 234, 0.3)",
               }}
             >
-              <CheckCircleIcon sx={{ color: "white", fontSize: 40 }} />
+              <CheckCircleIcon sx={{ color: "white", fontSize: 32 }} />
             </Box>
-            <Typography variant="h5" sx={{ fontWeight: 600, mb: 1 }}>
-              Trip Created!
+            <Typography variant="h5" sx={{ fontWeight: 600, mb: 1, color: "#1d1d1f" }}>
+              Trip Created
             </Typography>
-            <Typography variant="body1" sx={{ color: "text.secondary", mb: 3 }}>
-              Redirecting to home...
+            <Typography variant="body1" sx={{ color: "#86868b", mb: 3 }}>
+              Redirecting...
             </Typography>
-            <CircularProgress
-              size={28}
-              sx={{
-                color: "#667eea",
-              }}
-            />
+            <CircularProgress size={24} sx={{ color: "#1d1d1f" }} />
           </Box>
         </Fade>
       </Box>
@@ -144,84 +131,66 @@ const CreateTrip = () => {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 134px)",
-        background: "linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%)",
-        py: { xs: 3, md: 5 },
+        minHeight: "calc(100vh - 100px)",
+        background: "#ffffff",
+        py: { xs: 4, md: 6 },
         px: { xs: 2, md: 3 },
         display: "flex",
         justifyContent: "center",
         alignItems: "flex-start",
       }}
     >
-      <Fade in timeout={400}>
-        <Paper
-          elevation={0}
+      <Fade in timeout={300}>
+        <Box
           sx={{
             width: "100%",
-            maxWidth: 520,
-            background: "rgba(255, 255, 255, 0.9)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)",
-            borderRadius: 3,
-            overflow: "hidden",
+            maxWidth: 480,
           }}
         >
           {/* Header */}
-          <Box
-            sx={{
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              px: 3,
-              py: 3,
-              textAlign: "center",
-            }}
-          >
-            <Box
-              sx={{
-                width: 56,
-                height: 56,
-                borderRadius: "50%",
-                background: "rgba(255, 255, 255, 0.2)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                mx: "auto",
-                mb: 2,
+          <Box sx={{ mb: 4, textAlign: "center" }}>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 600, 
+                color: "#1d1d1f",
+                letterSpacing: "-0.02em",
+                mb: 0.5,
               }}
             >
-              <FlightTakeoffIcon sx={{ color: "white", fontSize: 28 }} />
-            </Box>
-            <Typography variant="h5" sx={{ color: "white", fontWeight: 600 }}>
-              Create New Trip
+              New Trip
             </Typography>
-            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", mt: 0.5 }}>
-              Add trip details and members to get started
+            <Typography variant="body1" sx={{ color: "#86868b" }}>
+              Add details and members
             </Typography>
           </Box>
 
           {/* Form */}
-          <Box sx={{ p: 3 }}>
-            <form onSubmit={createNewTrip}>
-              {/* Trip Name */}
+          <form onSubmit={createNewTrip}>
+            {/* Trip Name */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="caption" sx={{ color: "#86868b", mb: 0.5, display: "block" }}>
+                Trip Name
+              </Typography>
               <TextField
                 required
                 id="trip-name"
-                label="Trip Name"
                 placeholder="e.g., Goa Beach Trip"
                 fullWidth
                 value={tripName}
                 onChange={(e) => setTripName(e.target.value)}
-                sx={{ mb: 3 }}
+                size="small"
               />
+            </Box>
 
-              {/* Add Member */}
-              <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1 }}>
+            {/* Add Member */}
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="caption" sx={{ color: "#86868b", mb: 0.5, display: "block" }}>
                 Add Members
               </Typography>
-              <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 <TextField
                   id="member-name"
-                  label="Member Name"
                   placeholder="Enter name"
                   fullWidth
                   value={newMember}
@@ -234,69 +203,69 @@ const CreateTrip = () => {
                   variant="outlined"
                   onClick={addNewMember}
                   disabled={!newMember.trim()}
-                  sx={{ minWidth: 48, px: 1 }}
+                  sx={{ minWidth: 44, px: 1 }}
                 >
-                  <PersonAddIcon />
+                  <PersonAddIcon sx={{ fontSize: 20 }} />
                 </Button>
               </Box>
+            </Box>
 
-              {/* Member Chips */}
-              {members.length > 0 && (
-                <Box sx={{ mb: 3 }}>
-                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                    {members.map((member) => (
-                      <Chip
-                        key={member}
-                        label={member}
-                        onDelete={() => handleDelete(member)}
-                        sx={{
-                          background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                          color: "white",
-                          fontWeight: 500,
-                          "& .MuiChip-deleteIcon": {
-                            color: "rgba(255, 255, 255, 0.7)",
-                            "&:hover": {
-                              color: "white",
-                            },
+            {/* Member Chips */}
+            {members.length > 0 && (
+              <Box sx={{ mb: 3 }}>
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                  {members.map((member) => (
+                    <Chip
+                      key={member}
+                      label={member}
+                      onDelete={() => handleDelete(member)}
+                      size="small"
+                      sx={{
+                        background: "#1d1d1f",
+                        color: "white",
+                        fontWeight: 400,
+                        "& .MuiChip-deleteIcon": {
+                          color: "rgba(255, 255, 255, 0.6)",
+                          "&:hover": {
+                            color: "white",
                           },
-                        }}
-                      />
-                    ))}
-                  </Box>
-                  <Typography variant="caption" sx={{ color: "text.secondary", mt: 1, display: "block" }}>
-                    {members.length} member{members.length !== 1 ? "s" : ""} added
-                    {members.length < 2 && " (minimum 2 required)"}
-                  </Typography>
+                        },
+                      }}
+                    />
+                  ))}
                 </Box>
-              )}
-
-              {/* Error Alert */}
-              {error && (
-                <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
-                  {error}
-                </Alert>
-              )}
-
-              {/* Action Buttons */}
-              <Box sx={{ display: "flex", gap: 2 }}>
-                <Button
-                  variant="outlined"
-                  onClick={() => navigate("/")}
-                  startIcon={<ArrowBackIcon />}
-                  sx={{ flex: 1 }}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  type="submit"
-                  sx={{ flex: 2 }}
-                >
-                  Create Trip
-                </Button>
+                <Typography variant="caption" sx={{ color: "#86868b", mt: 1, display: "block" }}>
+                  {members.length} member{members.length !== 1 ? "s" : ""} added
+                  {members.length < 2 && " (minimum 2 required)"}
+                </Typography>
               </Box>
-            </form>
-          </Box>
+            )}
+
+            {/* Error Alert */}
+            {error && (
+              <Alert severity="error" sx={{ mb: 3 }}>
+                {error}
+              </Alert>
+            )}
+
+            {/* Action Buttons */}
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/")}
+                startIcon={<ArrowBackIcon />}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                type="submit"
+                fullWidth
+              >
+                Create Trip
+              </Button>
+            </Box>
+          </form>
 
           <Snackbar
             open={open}
@@ -304,15 +273,14 @@ const CreateTrip = () => {
             onClose={handleClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
           >
-            <Alert severity="success" sx={{ width: "100%", borderRadius: 2 }}>
-              Trip created successfully! Redirecting...
+            <Alert severity="success" sx={{ width: "100%" }}>
+              Trip created!
             </Alert>
           </Snackbar>
-        </Paper>
+        </Box>
       </Fade>
     </Box>
   );
 };
 
 export default CreateTrip;
-

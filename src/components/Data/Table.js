@@ -30,24 +30,21 @@ const Table = ({ selectedTripId }) => {
   if (filteredExpenses.length === 0) {
     return (
       <Fade in timeout={500}>
-        <Paper
-          elevation={0}
+        <Box
           sx={{
-            p: 4,
+            p: 6,
             textAlign: "center",
-            background: "rgba(255, 255, 255, 0.8)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            border: "1px solid rgba(255, 255, 255, 0.5)",
+            background: "#fbfbfd",
             borderRadius: 3,
+            border: "1px dashed #d2d2d7",
           }}
         >
           <Box
             sx={{
-              width: 64,
-              height: 64,
+              width: 56,
+              height: 56,
               borderRadius: "50%",
-              background: "linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)",
+              background: "#f5f5f7",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -55,37 +52,36 @@ const Table = ({ selectedTripId }) => {
               mb: 2,
             }}
           >
-            <ReceiptIcon sx={{ fontSize: 28, color: "#667eea" }} />
+            <ReceiptIcon sx={{ fontSize: 24, color: "#86868b" }} />
           </Box>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mb: 0.5, color: "#1d1d1f" }}>
             No expenses yet
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ color: "#86868b" }}>
             Add your first expense above to get started
           </Typography>
-        </Paper>
+        </Box>
       </Fade>
     );
   }
 
   return (
     <Fade in timeout={500}>
-      <Paper
-        elevation={0}
-        sx={{
-          background: "rgba(255, 255, 255, 0.8)",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.5)",
-          borderRadius: 3,
-          overflow: "hidden",
-        }}
-      >
+      <Box sx={{ background: "#ffffff", borderRadius: 3 }}>
         {/* Header */}
-        <Box sx={{ px: 3, py: 2, borderBottom: "1px solid rgba(0, 0, 0, 0.06)" }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, display: "flex", alignItems: "center", gap: 1 }}>
-            <ReceiptIcon sx={{ color: "#667eea" }} />
-            Expenses ({filteredExpenses.length})
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, display: "flex", alignItems: "center", gap: 1, color: "#1d1d1f" }}>
+            Expenses
+            <Chip 
+              label={filteredExpenses.length} 
+              size="small" 
+              sx={{ 
+                background: "#f5f5f7", 
+                color: "#1d1d1f",
+                fontWeight: 600,
+                height: 24
+              }} 
+            />
           </Typography>
         </Box>
 
@@ -95,7 +91,6 @@ const Table = ({ selectedTripId }) => {
             display: "grid",
             gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" },
             gap: 2,
-            p: 2,
           }}
         >
           {filteredExpenses.slice().reverse().map((data, index) => (
@@ -103,38 +98,26 @@ const Table = ({ selectedTripId }) => {
               <Card
                 sx={{
                   background: "#ffffff",
-                  border: "1px solid rgba(0, 0, 0, 0.06)",
-                  borderRadius: 2,
-                  position: "relative",
-                  overflow: "visible",
-                  "&::before": {
-                    content: '""',
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    height: "3px",
-                    background: "linear-gradient(90deg, #667eea 0%, #764ba2 100%)",
-                    borderRadius: "8px 8px 0 0",
-                  },
+                  border: "1px solid #e8e8ed",
+                  borderRadius: 2.5,
+                  boxShadow: "none",
                   transition: "all 200ms ease",
                   "&:hover": {
+                    borderColor: "#d2d2d7",
                     transform: "translateY(-2px)",
-                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.08)",
+                    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.04)",
                   },
                 }}
               >
-                <CardContent sx={{ p: 2.5, pb: "16px !important" }}>
+                <CardContent sx={{ p: 2 }}>
                   {/* Amount & Delete */}
                   <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1.5 }}>
                     <Typography
                       variant="h5"
                       sx={{
-                        fontWeight: 700,
-                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
+                        fontWeight: 600,
+                        color: "#1d1d1f",
+                        letterSpacing: "-0.02em"
                       }}
                     >
                       ₹{parseFloat(data.amount).toFixed(2)}
@@ -143,59 +126,65 @@ const Table = ({ selectedTripId }) => {
                       size="small"
                       onClick={() => handleDeleteExpense(data.expenseId)}
                       sx={{
-                        color: "text.secondary",
+                        color: "#aeaeb2",
+                        padding: 0.5,
                         "&:hover": {
-                          color: "#ef4444",
-                          background: "rgba(239, 68, 68, 0.1)",
+                          color: "#ff3b30",
+                          background: "rgba(255, 59, 48, 0.08)",
                         },
                       }}
                     >
-                      <DeleteIcon fontSize="small" />
+                      <DeleteIcon sx={{ fontSize: 18 }} />
                     </IconButton>
                   </Box>
 
                   {/* Description */}
-                  <Typography variant="body1" sx={{ fontWeight: 500, mb: 2, color: "text.primary" }}>
+                  <Typography variant="body1" sx={{ fontWeight: 500, mb: 2, color: "#1d1d1f" }}>
                     {data.desc}
                   </Typography>
 
-                  {/* Paid By */}
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
-                    <PersonIcon sx={{ fontSize: 16, color: "text.secondary" }} />
-                    <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                      Paid by <strong style={{ color: "#667eea" }}>{data.selectedUser}</strong>
-                    </Typography>
-                  </Box>
+                  <Box sx={{ pt: 1.5, borderTop: "1px solid #f5f5f7" }}>
+                    {/* Paid By */}
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+                      <PersonIcon sx={{ fontSize: 14, color: "#86868b" }} />
+                      <Typography variant="caption" sx={{ color: "#86868b" }}>
+                        Paid by <span style={{ color: "#1d1d1f", fontWeight: 500 }}>{data.selectedUser}</span>
+                      </Typography>
+                    </Box>
 
-                  {/* Split Among */}
-                  <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                    <GroupIcon sx={{ fontSize: 16, color: "text.secondary", mt: 0.5 }} />
-                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                      {data.selectedMembers.slice(0, 3).map((name) => (
-                        <Chip
-                          key={name}
-                          label={name}
-                          size="small"
-                          sx={{
-                            height: 22,
-                            fontSize: "0.7rem",
-                            background: "rgba(102, 126, 234, 0.1)",
-                            color: "#667eea",
-                          }}
-                        />
-                      ))}
-                      {data.selectedMembers.length > 3 && (
-                        <Chip
-                          label={`+${data.selectedMembers.length - 3}`}
-                          size="small"
-                          sx={{
-                            height: 22,
-                            fontSize: "0.7rem",
-                            background: "rgba(118, 75, 162, 0.1)",
-                            color: "#764ba2",
-                          }}
-                        />
-                      )}
+                    {/* Split Among */}
+                    <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
+                      <GroupIcon sx={{ fontSize: 14, color: "#86868b", mt: 0.5 }} />
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                        {data.selectedMembers.slice(0, 3).map((name) => (
+                          <Chip
+                            key={name}
+                            label={name}
+                            size="small"
+                            sx={{
+                              height: 20,
+                              fontSize: "0.7rem",
+                              background: "#f5f5f7",
+                              color: "#1d1d1f",
+                              border: "none"
+                            }}
+                          />
+                        ))}
+                        {data.selectedMembers.length > 3 && (
+                          <Chip
+                            label={`+${data.selectedMembers.length - 3}`}
+                            size="small"
+                            sx={{
+                              height: 20,
+                              fontSize: "0.7rem",
+                              background: "#f5f5f7",
+                              color: "#86868b",
+                              border: "none",
+                              fontWeight: 500
+                            }}
+                          />
+                        )}
+                      </Box>
                     </Box>
                   </Box>
                 </CardContent>
@@ -203,7 +192,7 @@ const Table = ({ selectedTripId }) => {
             </Fade>
           ))}
         </Box>
-      </Paper>
+      </Box>
     </Fade>
   );
 };
