@@ -4,21 +4,23 @@ import Paper from "@mui/material/Paper";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Autocomplete from "@mui/material/Autocomplete";
-import Switch from "@mui/material/Switch";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormControl from "@mui/material/FormControl";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import Fade from "@mui/material/Fade";
 import Chip from "@mui/material/Chip";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Checkbox from "@mui/material/Checkbox";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import AddIcon from "@mui/icons-material/Add";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
+import PercentIcon from "@mui/icons-material/Percent";
+import BalanceIcon from "@mui/icons-material/Balance";
+import EditIcon from "@mui/icons-material/Edit";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useStoreProvider } from "../../store";
@@ -44,26 +46,76 @@ const NewExpense = () => {
   const [desc, setDesc] = useState("");
   const [selectedUser, setSelectedUser] = useState(null);
   const [summary, setSummary] = useState(false);
-  const [checked, setChecked] = useState(() => {
-    const initialChecked = {};
+  
+  // Split type: 'equal', 'percentage', 'amount'
+  const [splitType, setSplitType] = useState("equal");
+  
+  // For equal split - who is included
+  const [includedMembers, setIncludedMembers] = useState(() => {
+    const initial = {};
     memberNames.forEach((name) => {
-      initialChecked[name] = true;
+      initial[name] = true;
     });
-    return initialChecked;
+    return initial;
   });
+  
+  // For percentage/amount split - custom values per member
+  const [customSplit, setCustomSplit] = useState(() => {
+    const initial = {};
+    memberNames.forEach((name) => {
+      initial[name] = "";
+    });
+    return initial;
+  });
+
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const initialChecked = {};
+    const initialIncluded = {};
+    const initialCustom = {};
     memberNames.forEach((name) => {
-      initialChecked[name] = true;
+      initialIncluded[name] = true;
+      initialCustom[name] = "";
     });
-    setChecked(initialChecked);
+    setIncludedMembers(initialIncluded);
+    setCustomSplit(initialCustom);
   }, [memberNames]);
 
+  // Calculate split preview
+  const splitPreview = useMemo(() => {
+    const totalAmount = parseFloat(amount) || 0;
+    const preview = {};
+    
+    if (splitType === "equal") {
+      const includedCount = Object.values(includedMembers).filter(Boolean).length;
+      const perPerson = includedCount > 0 ? totalAmount / includedCount : 0;
+      memberNames.forEach((name) => {
+        preview[name] = includedMembers[name] ? perPerson : 0;
+      });
+    } else if (splitType === "percentage") {
+      memberNames.forEach((name) => {
+        const pct = parseFloat(customSplit[name]) || 0;
+        preview[name] = (pct / 100) * totalAmount;
+      });
+    } else if (splitType === "amount") {
+      memberNames.forEach((name) => {
+        preview[name] = parseFloat(customSplit[name]) || 0;
+      });
+    }
+    
+    return preview;
+  }, [amount, splitType, includedMembers, customSplit, memberNames]);
+
+  const totalSplitAmount = Object.values(splitPreview).reduce((a, b) => a + b, 0);
+  const totalPercentage = splitType === "percentage" 
+    ? Object.values(customSplit).reduce((a, b) => a + (parseFloat(b) || 0), 0)
+    : 100;
+
   const saveExpense = () => {
-    if (!amount || parseFloat(amount) <= 0) {
+    const totalAmount = parseFloat(amount);
+    
+    if (!amount || totalAmount <= 0) {
       setError("Please enter a valid amount.");
       return;
     }
@@ -76,24 +128,52 @@ const NewExpense = () => {
       return;
     }
 
-    const selectedMembers = memberNames.filter((name) => checked[name]);
-    if (selectedMembers.length === 0) {
-      setError("Please select at least one member to split with.");
-      return;
+    // Validate split
+    if (splitType === "equal") {
+      const includedCount = Object.values(includedMembers).filter(Boolean).length;
+      if (includedCount === 0) {
+        setError("Please include at least one member in the split.");
+        return;
+      }
+    } else if (splitType === "percentage") {
+      if (Math.abs(totalPercentage - 100) > 0.01) {
+        setError(`Percentages must add up to 100%. Current: ${totalPercentage.toFixed(1)}%`);
+        return;
+      }
+    } else if (splitType === "amount") {
+      if (Math.abs(totalSplitAmount - totalAmount) > 0.01) {
+        setError(`Split amounts must equal ₹${totalAmount.toFixed(2)}. Current: ₹${totalSplitAmount.toFixed(2)}`);
+        return;
+      }
     }
 
+    // Get selected members (those with non-zero split)
+    const selectedMembers = memberNames.filter((name) => splitPreview[name] > 0);
+    
     addNewExpense({
       tripId: selectedTripId,
       expenseId: uuidv4(),
-      amount: parseFloat(amount),
+      amount: totalAmount,
       desc: desc.trim(),
       selectedUser,
       selectedMembers,
+      splitType,
+      splitDetails: splitPreview,
     });
 
+    // Reset form
     setAmount("");
     setDesc("");
     setSelectedUser(null);
+    setSplitType("equal");
+    const resetIncluded = {};
+    const resetCustom = {};
+    memberNames.forEach((name) => {
+      resetIncluded[name] = true;
+      resetCustom[name] = "";
+    });
+    setIncludedMembers(resetIncluded);
+    setCustomSplit(resetCustom);
     setError("");
     setOpenSnackbar(true);
   };
@@ -104,7 +184,9 @@ const NewExpense = () => {
       .reduce((sum, expense) => sum + parseFloat(expense.amount), 0);
   }, [allExpense, selectedTripId]);
 
-  const selectedMembersCount = Object.values(checked).filter(Boolean).length;
+  const selectedMembersCount = splitType === "equal" 
+    ? Object.values(includedMembers).filter(Boolean).length
+    : memberNames.filter((name) => splitPreview[name] > 0).length;
 
   if (summary) {
     return (
@@ -234,58 +316,167 @@ const NewExpense = () => {
                 />
               </Box>
 
-              <Divider sx={{ my: 2 }} />
+              <Divider sx={{ my: 1.5 }} />
 
-              {/* Split Among */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" sx={{ color: "text.secondary", mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
-                  Split Among ({selectedMembersCount} of {memberNames.length})
+              {/* Split Type Selection */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", mb: 1, display: "block" }}>
+                  How to split?
                 </Typography>
-                <FormControl component="fieldset">
-                  <FormGroup sx={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: 1 }}>
-                    {memberNames.map((name) => (
-                      <Paper
-                        key={name}
-                        elevation={0}
-                        sx={{
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: 2,
-                          border: checked[name] ? "2px solid #667eea" : "2px solid #e2e8f0",
-                          background: checked[name] ? "rgba(102, 126, 234, 0.05)" : "transparent",
-                          transition: "all 200ms ease",
-                          cursor: "pointer",
-                          "&:hover": {
-                            borderColor: "#667eea",
-                          },
-                        }}
-                        onClick={() =>
-                          setChecked((prev) => ({
-                            ...prev,
-                            [name]: !prev[name],
-                          }))
-                        }
-                      >
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={!!checked[name]}
-                              onChange={() =>
-                                setChecked((prev) => ({
-                                  ...prev,
-                                  [name]: !prev[name],
-                                }))
-                              }
+                <ToggleButtonGroup
+                  value={splitType}
+                  exclusive
+                  onChange={(e, newType) => newType && setSplitType(newType)}
+                  size="small"
+                  sx={{ 
+                    display: "flex", 
+                    flexWrap: "wrap",
+                    "& .MuiToggleButton-root": {
+                      flex: { xs: "1 1 30%", sm: "1 1 auto" },
+                      py: 0.75,
+                      px: 1.5,
+                      fontSize: "0.8rem",
+                      borderRadius: "6px !important",
+                      border: "1px solid #e2e8f0 !important",
+                      mx: 0.25,
+                      my: 0.25,
+                      "&.Mui-selected": {
+                        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                        color: "white",
+                        borderColor: "#667eea !important",
+                        "&:hover": {
+                          background: "linear-gradient(135deg, #5a71e4 0%, #693f96 100%)",
+                        },
+                      },
+                    },
+                  }}
+                >
+                  <ToggleButton value="equal">
+                    <BalanceIcon sx={{ mr: 0.5, fontSize: 16 }} />
+                    Equal
+                  </ToggleButton>
+                  <ToggleButton value="percentage">
+                    <PercentIcon sx={{ mr: 0.5, fontSize: 16 }} />
+                    Percentage
+                  </ToggleButton>
+                  <ToggleButton value="amount">
+                    <EditIcon sx={{ mr: 0.5, fontSize: 16 }} />
+                    Amount
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Box>
+
+              {/* Split Details */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="caption" sx={{ color: "text.secondary", mb: 0.75, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <span>
+                    {splitType === "equal" && `Split Among (${selectedMembersCount} of ${memberNames.length})`}
+                    {splitType === "percentage" && `Percentage Split (Total: ${totalPercentage.toFixed(0)}%)`}
+                    {splitType === "amount" && `Amount Split (₹${totalSplitAmount.toFixed(2)} of ₹${parseFloat(amount || 0).toFixed(2)})`}
+                  </span>
+                  {splitType !== "equal" && (
+                    <Chip 
+                      size="small"
+                      label={
+                        splitType === "percentage" 
+                          ? (Math.abs(totalPercentage - 100) < 0.01 ? "✓ Valid" : `${(100 - totalPercentage).toFixed(1)}% remaining`)
+                          : (Math.abs(totalSplitAmount - parseFloat(amount || 0)) < 0.01 ? "✓ Valid" : `₹${(parseFloat(amount || 0) - totalSplitAmount).toFixed(2)} remaining`)
+                      }
+                      sx={{
+                        background: (splitType === "percentage" ? Math.abs(totalPercentage - 100) < 0.01 : Math.abs(totalSplitAmount - parseFloat(amount || 0)) < 0.01)
+                          ? "#dcfce7"
+                          : "#fef3c7",
+                        color: (splitType === "percentage" ? Math.abs(totalPercentage - 100) < 0.01 : Math.abs(totalSplitAmount - parseFloat(amount || 0)) < 0.01)
+                          ? "#16a34a"
+                          : "#d97706",
+                      }}
+                    />
+                  )}
+                </Typography>
+
+                {/* Member Split Cards */}
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                  {memberNames.map((name) => (
+                    <Paper
+                      key={name}
+                      elevation={0}
+                      sx={{
+                        p: 1,
+                        borderRadius: 1.5,
+                        border: splitPreview[name] > 0 ? "1px solid #667eea" : "1px solid #e2e8f0",
+                        background: splitPreview[name] > 0 ? "rgba(102, 126, 234, 0.03)" : "white",
+                        transition: "all 150ms ease",
+                      }}
+                    >
+                      <Box sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        gap: 1,
+                        flexDirection: "row",
+                      }}>
+                        {/* Member Name & Checkbox (for equal split) */}
+                        <Box sx={{ 
+                          display: "flex", 
+                          alignItems: "center", 
+                          flex: 1,
+                          minWidth: 0,
+                        }}>
+                          {splitType === "equal" && (
+                            <Checkbox
+                              checked={includedMembers[name] || false}
+                              onChange={(e) => setIncludedMembers((prev) => ({ ...prev, [name]: e.target.checked }))}
                               size="small"
+                              sx={{ 
+                                p: 0.5,
+                                color: "#667eea",
+                                "&.Mui-checked": { color: "#667eea" },
+                              }}
                             />
-                          }
-                          label={<Typography variant="body2" sx={{ fontWeight: 500 }}>{name}</Typography>}
-                          sx={{ m: 0 }}
-                        />
-                      </Paper>
-                    ))}
-                  </FormGroup>
-                </FormControl>
+                          )}
+                          <Typography variant="body2" sx={{ fontWeight: 600, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {name}
+                          </Typography>
+                        </Box>
+
+                        {/* Input for percentage/amount */}
+                        {splitType !== "equal" && (
+                          <TextField
+                            type="number"
+                            size="small"
+                            placeholder={splitType === "percentage" ? "0" : "0.00"}
+                            value={customSplit[name]}
+                            onChange={(e) => setCustomSplit((prev) => ({ ...prev, [name]: e.target.value }))}
+                            InputProps={{
+                              endAdornment: splitType === "percentage" 
+                                ? <Typography variant="body2" sx={{ color: "text.secondary" }}>%</Typography>
+                                : <Typography variant="body2" sx={{ color: "text.secondary" }}>₹</Typography>,
+                            }}
+                            sx={{ 
+                              width: 90,
+                              "& .MuiInputBase-input": { py: 0.75, px: 1, fontSize: "0.85rem" },
+                            }}
+                          />
+                        )}
+
+                        {/* Preview Amount */}
+                        <Box sx={{ 
+                          textAlign: "right",
+                          minWidth: 70,
+                        }}>
+                          <Typography 
+                            variant="body2" 
+                            sx={{ 
+                              fontWeight: 700,
+                              color: splitPreview[name] > 0 ? "#667eea" : "text.secondary",
+                            }}
+                          >
+                            ₹{splitPreview[name].toFixed(2)}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </Paper>
+                  ))}
+                </Box>
               </Box>
 
               {/* Error */}

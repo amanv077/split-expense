@@ -66,7 +66,7 @@ const Footer = () => {
           >
             © 2022 Made with
             <FavoriteIcon sx={{ fontSize: 14, color: "#ef4444" }} />
-            for easy expense splitting
+            by Aman
           </Typography>
         </Box>
       </Container>
