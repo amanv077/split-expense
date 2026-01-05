@@ -64,7 +64,7 @@ const Footer = () => {
               fontSize: "0.8rem",
             }}
           >
-            © {currentYear} Made with
+            © 2022 Made with
             <FavoriteIcon sx={{ fontSize: 14, color: "#ef4444" }} />
             for easy expense splitting
           </Typography>

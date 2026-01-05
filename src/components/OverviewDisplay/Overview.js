@@ -15,6 +15,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
+import ShareIcon from "@mui/icons-material/Share";
 import { useNavigate } from "react-router-dom";
 
 const Overview = ({ allExpense, trip, selectedTripId }) => {
@@ -282,17 +283,17 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
                   <Paper
                     elevation={0}
                     sx={{
-                      background: "linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%)",
-                      border: "1px solid rgba(102, 126, 234, 0.2)",
-                      borderRadius: 2,
+                      background: "linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%)",
+                      border: "2px solid rgba(102, 126, 234, 0.3)",
+                      borderRadius: 3,
                       p: 3,
                     }}
                   >
                     <Typography
-                      variant="h6"
+                      variant="h5"
                       sx={{
-                        fontWeight: 600,
-                        mb: 2,
+                        fontWeight: 700,
+                        mb: 3,
                         textAlign: "center",
                         background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
                         WebkitBackgroundClip: "text",
@@ -300,50 +301,135 @@ const Overview = ({ allExpense, trip, selectedTripId }) => {
                         backgroundClip: "text",
                       }}
                     >
-                      🎉 Settlement Plan
+                      ✨ Settlement Plan
                     </Typography>
-                    <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                    
+                    {/* Settlement Cards */}
+                    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mb: 3 }}>
                       {summary.map((transaction, index) => (
                         <Paper
                           key={index}
                           elevation={0}
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            gap: 2,
-                            p: 2,
+                            p: 2.5,
                             background: "white",
                             borderRadius: 2,
-                            animation: `fadeIn 300ms ease ${index * 100}ms forwards`,
+                            border: "1px solid rgba(0, 0, 0, 0.08)",
+                            animation: `slideIn 300ms ease ${index * 100}ms forwards`,
                             opacity: 0,
-                            "@keyframes fadeIn": {
-                              to: { opacity: 1 },
+                            transform: "translateY(10px)",
+                            "@keyframes slideIn": {
+                              to: { opacity: 1, transform: "translateY(0)" },
                             },
                           }}
                         >
-                          <Typography variant="body1" sx={{ fontWeight: 600, color: "#ef4444" }}>
-                            {transaction.from}
-                          </Typography>
-                          <ArrowForwardIcon sx={{ color: "#667eea" }} />
-                          <Typography variant="body1" sx={{ fontWeight: 600, color: "#10b981" }}>
-                            {transaction.to}
-                          </Typography>
-                          <Typography
-                            variant="body1"
-                            sx={{
-                              fontWeight: 700,
-                              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                              px: 1.5,
-                              py: 0.5,
-                              borderRadius: 1,
-                              color: "white",
-                            }}
-                          >
-                            ₹{transaction.amount.toFixed(2)}
-                          </Typography>
+                          <Box sx={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            justifyContent: "center", 
+                            flexDirection: { xs: "column", sm: "row" },
+                            gap: { xs: 1.5, sm: 2 } 
+                          }}>
+                            {/* Payer */}
+                            <Box sx={{ 
+                              background: "linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)", 
+                              px: 2.5, 
+                              py: 1.5, 
+                              borderRadius: 2,
+                              border: "1px solid #fca5a5",
+                              minWidth: { xs: "100%", sm: "auto" },
+                              textAlign: "center",
+                            }}>
+                              <Typography variant="body1" sx={{ fontWeight: 700, color: "#dc2626" }}>
+                                {transaction.from}
+                              </Typography>
+                            </Box>
+                            
+                            {/* Action Text - Amount */}
+                            <Box sx={{ 
+                              textAlign: "center",
+                              display: "flex",
+                              flexDirection: { xs: "row", sm: "column" },
+                              alignItems: "center",
+                              gap: { xs: 1, sm: 0 },
+                            }}>
+                              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500, display: { xs: "none", sm: "block" } }}>
+                                pays
+                              </Typography>
+                              <Typography
+                                variant="h5"
+                                sx={{
+                                  fontWeight: 800,
+                                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                                  WebkitBackgroundClip: "text",
+                                  WebkitTextFillColor: "transparent",
+                                  backgroundClip: "text",
+                                }}
+                              >
+                                ₹{transaction.amount.toFixed(2)}
+                              </Typography>
+                              <Typography variant="body2" sx={{ color: "text.secondary", fontWeight: 500, display: { xs: "none", sm: "block" } }}>
+                                to
+                              </Typography>
+                            </Box>
+                            
+                            {/* Receiver */}
+                            <Box sx={{ 
+                              background: "linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)", 
+                              px: 2.5, 
+                              py: 1.5, 
+                              borderRadius: 2,
+                              border: "1px solid #86efac",
+                              minWidth: { xs: "100%", sm: "auto" },
+                              textAlign: "center",
+                            }}>
+                              <Typography variant="body1" sx={{ fontWeight: 700, color: "#16a34a" }}>
+                                {transaction.to}
+                              </Typography>
+                            </Box>
+                          </Box>
                         </Paper>
                       ))}
+                    </Box>
+
+                    {/* Share Button */}
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <Button
+                        variant="contained"
+                        startIcon={<ShareIcon />}
+                        onClick={() => {
+                          const tripName = trip?.tripName || "Trip";
+                          const totalText = `₹${totalAmount.toFixed(2)}`;
+                          
+                          let shareText = `💰 *${tripName} - Expense Settlement*\n`;
+                          shareText += `━━━━━━━━━━━━━━━━\n`;
+                          shareText += `📊 Total Spent: ${totalText}\n\n`;
+                          shareText += `💸 *Who Pays Whom:*\n`;
+                          
+                          summary.forEach((t, i) => {
+                            shareText += `${i + 1}. ${t.from} ➜ ${t.to}: ₹${t.amount.toFixed(2)}\n`;
+                          });
+                          
+                          shareText += `\n✅ Settle up and you're all square!`;
+                          shareText += `\n\n_Generated by Splitify_`;
+                          
+                          navigator.clipboard.writeText(shareText).then(() => {
+                            alert("Settlement summary copied to clipboard! Share it with your group.");
+                          }).catch(() => {
+                            alert("Could not copy. Please try again.");
+                          });
+                        }}
+                        sx={{
+                          px: 4,
+                          py: 1.2,
+                          background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                          "&:hover": {
+                            background: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+                          },
+                        }}
+                      >
+                        Share Settlement
+                      </Button>
                     </Box>
                   </Paper>
                 </Fade>
