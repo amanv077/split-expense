@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import {
@@ -10,6 +10,11 @@ import {
   Chip,
   Tooltip,
   Fade,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -22,13 +27,31 @@ const Main = () => {
   const { trips, setTrips } = useStoreProvider();
   const navigate = useNavigate();
 
+  // Delete confirmation dialog state
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [tripToDelete, setTripToDelete] = useState(null);
+
   const handleCreateNewTrip = () => {
     navigate("create-trip");
   };
 
-  const handleDeleteTrip = (e, tripId) => {
+  const handleDeleteClick = (e, trip) => {
     e.stopPropagation();
-    setTrips(trips.filter((trip) => trip.tripId !== tripId));
+    setTripToDelete(trip);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (tripToDelete) {
+      setTrips(trips.filter((trip) => trip.tripId !== tripToDelete.tripId));
+    }
+    setDeleteDialogOpen(false);
+    setTripToDelete(null);
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setTripToDelete(null);
   };
 
   const handleCardClick = (tripId) => {
@@ -202,7 +225,7 @@ const Main = () => {
                           <Tooltip title="Delete Trip">
                             <IconButton
                               size="small"
-                              onClick={(e) => handleDeleteTrip(e, trip.tripId)}
+                              onClick={(e) => handleDeleteClick(e, trip)}
                               sx={{
                                 color: "text.secondary",
                                 "&:hover": {
@@ -274,6 +297,48 @@ const Main = () => {
           )}
         </Paper>
       </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            minWidth: { xs: "90%", sm: 400 },
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>
+          Delete Trip?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete
+            {tripToDelete && (
+              <strong> "{tripToDelete.tripName}"</strong>
+            )}
+            ? All expenses associated with this trip will also be deleted. This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2.5, gap: 1 }}>
+          <Button
+            onClick={handleDeleteCancel}
+            variant="outlined"
+            sx={{ borderRadius: 2 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleDeleteConfirm}
+            variant="contained"
+            color="error"
+            sx={{ borderRadius: 2 }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
