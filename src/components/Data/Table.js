@@ -98,8 +98,8 @@ const Table = ({ selectedTripId }) => {
             p: 2,
           }}
         >
-          {filteredExpenses.slice().reverse().map((data, index) => (
-            <Fade in timeout={300 + index * 50} key={data.expenseId}>
+          {filteredExpenses.slice().reverse().map((data) => (
+            <Fade in timeout={300} key={data.expenseId}>
               <Card
                 sx={{
                   background: "#ffffff",
